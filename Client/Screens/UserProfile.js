@@ -8,11 +8,17 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import UserChart from '../Components/UserChart';
-// import UserLists from '../Components/UserLists';
+import UserLists from '../Components/UserLists';
 import UserProfileInfo from '../Components/UserProfileInfo';
 import { movies } from '../data';
 
-const UserProfile = ({ navigation, route }) => {
+const UserProfile = ({
+  navigation,
+  watchlist,
+  liked,
+  disliked,
+  favourites,
+}) => {
   return (
     <View style={styles.container}>
       <UserProfileInfo />
@@ -32,6 +38,42 @@ const UserProfile = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
         <View>
+          {watchlist.length > 0 ? (
+            <>
+              <UserLists title="Want to watch" userlist={watchlist} />
+            </>
+          ) : (
+              <></>
+            )}
+        </View>
+        <View>
+          {liked.length > 0 ? (
+            <>
+              <UserLists title="Liked" userlist={liked} />
+            </>
+          ) : (
+              <></>
+            )}
+        </View>
+        <View>
+          {disliked.length > 0 ? (
+            <>
+              <UserLists title="Disliked" userlist={disliked} />
+            </>
+          ) : (
+              <></>
+            )}
+        </View>
+        <View>
+          {favourites.length > 0 ? (
+            <>
+              <UserLists title="Favourites" userlist={favourites} />
+            </>
+          ) : (
+              <></>
+            )}
+        </View>
+        {/* <View>
           <Text>Want to watch</Text>
           <View style={styles.movies}>
             <TouchableOpacity
@@ -84,7 +126,7 @@ const UserProfile = ({ navigation, route }) => {
               />
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

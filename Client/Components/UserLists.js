@@ -4,79 +4,38 @@ import {
   Text,
   View,
   Image,
-  ScrollView,
+  FlatList,
   TouchableOpacity,
 } from 'react-native';
 // import MovieTile from './MovieTile';
-import { movies } from '../data';
+// import { movies } from '../data';
 
-const UserLists = ({ navigation }) => {
+const UserLists = ({ navigation, title, userlist }) => {
   return (
-    <ScrollView horizontal={true}>
-      <View>
-        <Text>Last seen</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('MovieDetails', movies[0])}
-        >
-          <Image
-            style={styles.posters}
-            source={{
-              uri: 'https://image.tmdb.org/t/p/w300/' + movies[0].poster_path,
-            }}
-          />
-        </TouchableOpacity>
-      </View>
-      <View>
-        <Text>Want to watch</Text>
-        <View style={styles.movies}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('MovieDetails', movies[1])}
-          >
-            <Image
-              style={styles.posters}
-              source={{
-                uri: 'https://image.tmdb.org/t/p/w300/' + movies[1].poster_path,
+    <View>
+      <Text>{title}</Text>
+      <FlatList
+        horizontal={true}
+        data={userlist}
+        keyExtractor={({ id }, index) => id.toString()}
+        renderItem={({ item }) => (
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('MovieDetails', item);
               }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('MovieDetails', movies[2])}
-          >
-            <Image
-              style={styles.posters}
-              source={{
-                uri: 'https://image.tmdb.org/t/p/w300/' + movies[2].poster_path,
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('MovieDetails', movies[3])}
-          >
-            <Image
-              style={styles.posters}
-              source={{
-                uri: 'https://image.tmdb.org/t/p/w300/' + movies[3].poster_path,
-              }}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View>
-        <Text>Favourite</Text>
-        <View style={styles.movies}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('MovieDetails', movies[4])}
-          >
-            <Image
-              style={styles.posters}
-              source={{
-                uri: 'https://image.tmdb.org/t/p/w300/' + movies[4].poster_path,
-              }}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+            >
+              <Image
+                style={styles.posters}
+                source={{
+                  uri: 'https://image.tmdb.org/t/p/w300/' + item.poster_path,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+    </View>
   );
 };
 

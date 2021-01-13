@@ -115,7 +115,6 @@ const Discover = ({ navigation }) => {
                 keyExtractor={({ id }, index) => id.toString()}
                 renderItem={({ item }) => (
                   <View>
-                    {/* <Text>{item.title}</Text> */}
                     <TouchableOpacity
                       onPress={() => {
                         navigation.navigate('MovieDetails', item);
@@ -141,7 +140,6 @@ const Discover = ({ navigation }) => {
                 keyExtractor={({ id }, index) => id.toString()}
                 renderItem={({ item }) => (
                   <View>
-                    {/* <Text>{item.title}</Text> */}
                     <TouchableOpacity
                       onPress={() => navigation.navigate('MovieDetails', item)}
                     >

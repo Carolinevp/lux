@@ -1,12 +1,25 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 // import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
-const AddToList = ({ route }) => {
+const AddToList = ({
+  route,
+  addToWatchlist,
+  addToLikedList,
+  addToDislikedList,
+  addToFavourites,
+}) => {
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 30, fontWeight: 'bold' }}>
@@ -20,15 +33,42 @@ const AddToList = ({ route }) => {
         }}
       />
       <View style={styles.icons}>
-        {/* <MaterialIcons name="playlist-add" size={24} color="#f6bd60" /> */}
-        <MaterialCommunityIcons
-          name="eye-plus-outline"
-          size={24}
-          color="#f6bd60"
-        />
-        <AntDesign name="like2" size={24} color="#83c5be" />
-        <AntDesign name="dislike2" size={24} color="#d00000" />
-        <Ionicons name="md-heart-sharp" size={24} color="#ffafcc" />
+        <TouchableOpacity
+          onPress={() => {
+            addToWatchlist(route.params);
+            Alert.alert('movie added to watchlist');
+          }}
+        >
+          <MaterialCommunityIcons
+            name="eye-plus-outline"
+            size={24}
+            color="#f6bd60"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            addToLikedList(route.params);
+            Alert.alert('movie added to liked movies');
+          }}
+        >
+          <AntDesign name="like2" size={24} color="#83c5be" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            addToDislikedList(route.params);
+            Alert.alert('movie added to disliked movies');
+          }}
+        >
+          <AntDesign name="dislike2" size={24} color="#d00000" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            addToFavourites(route.params);
+            Alert.alert('movie added to favourites');
+          }}
+        >
+          <Ionicons name="md-heart-sharp" size={24} color="#ffafcc" />
+        </TouchableOpacity>
       </View>
     </View>
   );
