@@ -1,13 +1,5 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Alert } from 'react-native';
 // import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -22,14 +14,14 @@ const AddToList = ({
 }) => {
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 30, fontWeight: 'bold' }}>
+      {/* <Text style={{ fontSize: 30, fontWeight: 'bold' }}>
         {' '}
         {route.params.title}{' '}
-      </Text>
+      </Text> */}
       <Image
         style={styles.posters}
         source={{
-          uri: 'https://image.tmdb.org/t/p/w300/' + route.params.poster_path,
+          uri: 'https://image.tmdb.org/t/p/w400/' + route.params.poster_path,
         }}
       />
       <View style={styles.icons}>
@@ -41,7 +33,7 @@ const AddToList = ({
         >
           <MaterialCommunityIcons
             name="eye-plus-outline"
-            size={24}
+            size={34}
             color="#f6bd60"
           />
         </TouchableOpacity>
@@ -51,7 +43,7 @@ const AddToList = ({
             Alert.alert('movie added to liked movies');
           }}
         >
-          <AntDesign name="like2" size={24} color="#83c5be" />
+          <AntDesign name="like2" size={34} color="#83c5be" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -59,7 +51,7 @@ const AddToList = ({
             Alert.alert('movie added to disliked movies');
           }}
         >
-          <AntDesign name="dislike2" size={24} color="#d00000" />
+          <AntDesign name="dislike2" size={34} color="#d00000" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -67,7 +59,7 @@ const AddToList = ({
             Alert.alert('movie added to favourites');
           }}
         >
-          <Ionicons name="md-heart-sharp" size={24} color="#ffafcc" />
+          <Ionicons name="md-heart-sharp" size={34} color="#ffafcc" />
         </TouchableOpacity>
       </View>
     </View>
@@ -79,12 +71,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#ffffff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     flex: 1,
   },
   posters: {
-    width: 320,
-    height: 450,
+    width: 310,
+    height: 440,
     marginTop: 20,
     marginRight: 10,
     borderRadius: 8,

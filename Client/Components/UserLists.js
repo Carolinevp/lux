@@ -7,8 +7,6 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-// import MovieTile from './MovieTile';
-// import { movies } from '../data';
 
 const UserLists = ({ navigation, title, userlist }) => {
   return (
@@ -28,7 +26,7 @@ const UserLists = ({ navigation, title, userlist }) => {
               <Image
                 style={styles.posters}
                 source={{
-                  uri: 'https://image.tmdb.org/t/p/w300/' + item.poster_path,
+                  uri: 'https://image.tmdb.org/t/p/w400/' + item.poster_path,
                 }}
               />
             </TouchableOpacity>

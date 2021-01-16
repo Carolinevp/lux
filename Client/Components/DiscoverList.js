@@ -8,7 +8,7 @@ const DiscoverList = ({ movie }) => {
       <Image
         style={styles.posters}
         source={{
-          uri: 'https://image.tmdb.org/t/p/w300/' + movie.poster_path,
+          uri: 'https://image.tmdb.org/t/p/w400/' + movie.poster_path,
         }}
       />
     </View>

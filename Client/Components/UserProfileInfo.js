@@ -8,7 +8,7 @@ const UserProfileInfo = () => {
     <View style={styles.header}>
       <Image
         style={styles.profilePicture}
-        source={require('./T0WU5R8NT-U01C4AC9BUY-93e74dc2edb4-512.jpg')}
+        source={require('../assets/T0WU5R8NT-U01C4AC9BUY-93e74dc2edb4-512.jpg')}
       />
       <View style={{ flexDirection: 'column' }}>
         <Text style={{ fontWeight: 'bold' }}>{users[0].user_name}</Text>

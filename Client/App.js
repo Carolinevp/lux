@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Alert } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { Alert, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import Login from './Screens/Login';
 import UserProfile from './Screens/UserProfile';
@@ -9,7 +9,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BottomTabBar from './Components/BottomTabBar';
 import Discover from './Screens/Discover';
 import Search from './Screens/Search';
+import { UserContext } from './UserContext';
 import { createStackNavigator } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-community/async-storage';
+// import users from './data';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -23,6 +26,8 @@ const MainStackNavigator = ({
   addToLikedList,
   addToDislikedList,
   addToFavourites,
+  lastSeen,
+  setLiked,
 }) => {
   return (
     <Stack.Navigator>
@@ -33,18 +38,44 @@ const MainStackNavigator = ({
             liked={liked}
             disliked={disliked}
             favourites={favourites}
+            lastSeen={lastSeen}
+            setLiked={setLiked}
             {...props}
           />
         )}
       </Stack.Screen>
       <Stack.Screen
         name="MovieDetails"
-        component={MovieDetails}
         options={{
-          gestureEnabled: true,
+          title: '',
+          headerStyle: {
+            backgroundColor: '#fae1dd',
+          },
+          headerTitleAlign: 'center',
         }}
-      />
-      <Stack.Screen name="AddToList">
+      >
+        {(props) => (
+          <MovieDetails
+            liked={liked}
+            disliked={disliked}
+            favourites={favourites}
+            {...props}
+            options={{
+              gestureEnabled: true,
+            }}
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="AddToList"
+        options={({ route }) => ({
+          title: route.params.title,
+          headerStyle: {
+            backgroundColor: '#fae1dd',
+          },
+          headerTitleAlign: 'center',
+        })}
+      >
         {(props) => (
           <AddToList
             addToLikedList={addToLikedList}
@@ -52,6 +83,7 @@ const MainStackNavigator = ({
             addToWatchlist={addToWatchlist}
             addToFavourites={addToFavourites}
             {...props}
+            options={({ route }) => ({ title: route.params.title })}
           />
         )}
       </Stack.Screen>
@@ -68,12 +100,42 @@ const DiscoverNavigator = ({
   addToLikedList,
   addToDislikedList,
   addToFavourites,
+  liked,
+  disliked,
+  favourites,
 }) => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Discover" component={Discover} />
-      <Stack.Screen name="MovieDetails" component={MovieDetails} />
-      <Stack.Screen name="AddToList">
+      <Stack.Screen
+        name="MovieDetails"
+        options={{
+          title: '',
+          headerStyle: {
+            backgroundColor: '#fae1dd',
+          },
+          headerTitleAlign: 'center',
+        }}
+      >
+        {(props) => (
+          <MovieDetails
+            liked={liked}
+            disliked={disliked}
+            favourites={favourites}
+            {...props}
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="AddToList"
+        options={({ route }) => ({
+          title: route.params.title,
+          headerStyle: {
+            backgroundColor: '#fae1dd',
+          },
+          headerTitleAlign: 'center',
+        })}
+      >
         {(props) => (
           <AddToList
             addToWatchlist={addToWatchlist}
@@ -89,26 +151,8 @@ const DiscoverNavigator = ({
 };
 
 const AllTabs = () => {
-  // const [lastSeen, setLastSeen] = useState();
-  const [watchlist, setWatchlist] = useState([
-    {
-      adult: false,
-      backdrop_path: '/h3dqQ1uqHsNwIVDufe9AzI7KgVS.jpg',
-      genre_ids: [16, 10751],
-      id: 749618,
-      original_language: 'es',
-      original_title: 'El Camino de Xico',
-      overview:
-        'The peace of a small town is endangered when a corporation wants to destroy the mountain that protects them. A girl named Copi and her best friend Xico, a Xoloitzcuintle dog, will go into the mountains to try to save the town.',
-      popularity: 847.803,
-      poster_path: '/ssk0Gd27ziryP2OUxprIVhAvr3e.jpg',
-      release_date: '2020-11-12',
-      title: "Xico's Path",
-      video: false,
-      vote_average: 7.2,
-      vote_count: 28,
-    },
-  ]);
+  const [lastSeen, setLastSeen] = useState([]);
+  const [watchlist, setWatchlist] = useState([]);
   const [liked, setLiked] = useState([]);
   const [disliked, setDisliked] = useState([]);
   const [favourites, setFavourites] = useState([]);
@@ -122,27 +166,58 @@ const AllTabs = () => {
   }
 
   function addToLikedList(movie) {
-    if (!watchlist.includes(movie)) {
+    if (watchlist.includes(movie)) {
+      watchlist.splice(watchlist.indexOf(movie), 1);
+      setWatchlist(() => [...watchlist]);
+    }
+    if (disliked.includes(movie)) {
+      disliked.splice(disliked.indexOf(movie), 1);
+      setDisliked(() => [...disliked]);
+    }
+    if (!liked.includes(movie)) {
       setLiked(() => [...liked, movie]);
     } else {
       Alert.alert('movie already in list');
     }
+    setLastSeen(() => [movie]);
   }
 
   function addToDislikedList(movie) {
-    if (!watchlist.includes(movie)) {
+    if (watchlist.includes(movie)) {
+      watchlist.splice(watchlist.indexOf(movie), 1);
+      setWatchlist(() => [...watchlist]);
+    }
+    if (favourites.includes(movie)) {
+      favourites.splice(favourites.indexOf(movie), 1);
+      setFavourites(() => [...favourites]);
+    }
+    if (liked.includes(movie)) {
+      liked.splice(liked.indexOf(movie), 1);
+      setLiked(() => [...liked]);
+    }
+    if (!disliked.includes(movie)) {
       setDisliked(() => [...disliked, movie]);
     } else {
       Alert.alert('movie already in list');
     }
+    setLastSeen(() => [movie]);
   }
 
   function addToFavourites(movie) {
+    if (disliked.includes(movie)) {
+      disliked.splice(disliked.indexOf(movie), 1);
+      setDisliked(() => [...disliked]);
+    }
+    if (watchlist.includes(movie)) {
+      watchlist.splice(watchlist.indexOf(movie), 1);
+      setWatchlist(() => [...watchlist]);
+    }
     if (!favourites.includes(movie)) {
       setFavourites(() => [...favourites, movie]);
     } else {
       Alert.alert('movie already in list');
     }
+    setLastSeen(() => [movie]);
   }
 
   return (
@@ -155,9 +230,11 @@ const AllTabs = () => {
             addToLikedList={addToLikedList}
             addToFavourites={addToFavourites}
             liked={liked}
+            setLiked={setLiked}
             addToDislikedList={addToDislikedList}
             disliked={disliked}
             favourites={favourites}
+            lastSeen={lastSeen}
             {...props}
           />
         )}
@@ -172,6 +249,8 @@ const AllTabs = () => {
             liked={liked}
             addToDislikedList={addToDislikedList}
             disliked={disliked}
+            lastSeen={lastSeen}
+            favourites={favourites}
             {...props}
           />
         )}
@@ -182,12 +261,77 @@ const AllTabs = () => {
 };
 
 export default function App() {
+  const [user, setUser] = useState();
+
+  const values = useMemo(() => ({ user, setUser }), [user, setUser]);
+  // const user1 = 'Caroline';
+
+  const setItemStorage = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (err) {
+      console.log('saving data error: ', err);
+    }
+  };
+
+  const removeItemStorage = async (key) => {
+    try {
+      await AsyncStorage.removeItem(key);
+    } catch (err) {
+      console.log('removing data error: ', err);
+    }
+  };
+
+  const getItemStorage = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        return value;
+      }
+    } catch (err) {
+      console.log('reading data error: ', err);
+    }
+  };
+  const users = {
+    id: 1,
+    name: 'Caroline Victor-Pujebet',
+    email: 'caroline_pujebet@hotmail.com',
+    profile_picture: 'T0WU5R8NT-U01C4AC9BUY-93e74dc2edb4-512.jpg',
+  };
+
+  function saveStorage() {
+    setItemStorage('User', users);
+  }
+
+  const removeStorage = () => {
+    removeItemStorage('User');
+    setUser('');
+  };
+
+  const readStorage = async () => {
+    getItemStorage('User').then((result) => {
+      let jsonObject = JSON.parse(result);
+      setUser(() => [jsonObject]);
+    });
+  };
+
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="AllTabs" component={AllTabs} />
-      </Stack.Navigator>
+      <UserContext.Provider value={values}>
+        <Stack.Navigator headerMode="none">
+          <Stack.Screen name="Login">
+            {(props) => (
+              <Login
+                saveStorage={saveStorage}
+                readStorage={readStorage}
+                removeStorage={removeStorage}
+                {...props}
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen name="AllTabs" component={AllTabs} />
+        </Stack.Navigator>
+      </UserContext.Provider>
     </NavigationContainer>
   );
 }

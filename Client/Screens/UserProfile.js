@@ -1,46 +1,67 @@
-import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet, View, ScrollView, Text, FlatList } from 'react-native';
 import UserChart from '../Components/UserChart';
 import UserLists from '../Components/UserLists';
 import UserProfileInfo from '../Components/UserProfileInfo';
-import { movies } from '../data';
+import { UserContext } from '../UserContext';
+import apiKey from '../assets/apikey';
+import getListsByUser from '../Services/ApiService';
 
 const UserProfile = ({
-  navigation,
   watchlist,
   liked,
   disliked,
   favourites,
+  lastSeen,
+  navigation,
+  setLiked,
 }) => {
+  // const { user } = useContext(UserContext);
+  // useEffect(() => {
+  //   getListsByUser()
+  //     .then(list => list.)
+  //   fetch(
+  //     `https://api.themoviedb.org/3/movie/${route.params.id}/recommendations?${apiKey}&language=en-US&page=1`,
+  //   )
+  //     .then((res) => res.json())
+  //     .then((result) => {
+  //       setLiked(result.results);
+  //     })
+  //     .catch((error) => console.error(error));
+  //   // .finally(() => setLoading(false));
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   return (
     <View style={styles.container}>
       <UserProfileInfo />
+      {/* <FlatList
+        data={user}
+        keyExtractor={({ id }, index) => id.toString()}
+        renderItem={({ item }) => <Text>{item.name}</Text>}
+      /> */}
       <UserChart />
       <ScrollView horizontal={true}>
         <View>
-          <Text>Last seen</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('MovieDetails', movies[0])}
-          >
-            <Image
-              style={styles.posters}
-              source={{
-                uri: 'https://image.tmdb.org/t/p/w300/' + movies[0].poster_path,
-              }}
-            />
-          </TouchableOpacity>
+          {liked.length > 0 ? (
+            <>
+              <UserLists
+                navigation={navigation}
+                title="Last seen"
+                userlist={lastSeen}
+              />
+            </>
+          ) : (
+              <></>
+            )}
         </View>
         <View>
           {watchlist.length > 0 ? (
             <>
-              <UserLists title="Want to watch" userlist={watchlist} />
+              <UserLists
+                navigation={navigation}
+                title="Want to watch"
+                userlist={watchlist}
+              />
             </>
           ) : (
               <></>
@@ -49,7 +70,11 @@ const UserProfile = ({
         <View>
           {liked.length > 0 ? (
             <>
-              <UserLists title="Liked" userlist={liked} />
+              <UserLists
+                navigation={navigation}
+                title="Liked"
+                userlist={liked}
+              />
             </>
           ) : (
               <></>
@@ -58,7 +83,11 @@ const UserProfile = ({
         <View>
           {disliked.length > 0 ? (
             <>
-              <UserLists title="Disliked" userlist={disliked} />
+              <UserLists
+                navigation={navigation}
+                title="Disliked"
+                userlist={disliked}
+              />
             </>
           ) : (
               <></>
@@ -67,66 +96,16 @@ const UserProfile = ({
         <View>
           {favourites.length > 0 ? (
             <>
-              <UserLists title="Favourites" userlist={favourites} />
+              <UserLists
+                navigation={navigation}
+                title="Favourites"
+                userlist={favourites}
+              />
             </>
           ) : (
               <></>
             )}
         </View>
-        {/* <View>
-          <Text>Want to watch</Text>
-          <View style={styles.movies}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('MovieDetails', movies[1])}
-            >
-              <Image
-                style={styles.posters}
-                source={{
-                  uri:
-                    'https://image.tmdb.org/t/p/w300/' + movies[1].poster_path,
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('MovieDetails', movies[2])}
-            >
-              <Image
-                style={styles.posters}
-                source={{
-                  uri:
-                    'https://image.tmdb.org/t/p/w300/' + movies[2].poster_path,
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('MovieDetails', movies[3])}
-            >
-              <Image
-                style={styles.posters}
-                source={{
-                  uri:
-                    'https://image.tmdb.org/t/p/w300/' + movies[3].poster_path,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View>
-          <Text>Favourite</Text>
-          <View style={styles.movies}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('MovieDetails', movies[4])}
-            >
-              <Image
-                style={styles.posters}
-                source={{
-                  uri:
-                    'https://image.tmdb.org/t/p/w300/' + movies[4].poster_path,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-        </View> */}
       </ScrollView>
     </View>
   );
@@ -164,17 +143,3 @@ const styles = StyleSheet.create({
 });
 
 export default UserProfile;
-
-// const [userList, setUserList] = useState([]);
-//   return (
-//     <View style={styles.container}>
-//       <UserProfileInfo />
-//       <UserChart />
-//       <FlatList
-//         style={styles.movies}
-//         data={users.user_movies}
-//         keyExtractor={({ id }, index) => id.toString()}
-//         renderItem={({ item }) => <UserLists categorie={item} />}
-//       />
-//     </View>
-//   );

@@ -1,102 +1,71 @@
-/* eslint-disable react-native/no-inline-styles */
-// /* eslint-disable react-hooks/exhaustive-deps */
-// import React, { useState, useCallback, useEffect } from 'react';
-// import { FlatList, StyleSheet, RefreshControl, Text } from 'react-native';
-// import db from '../data';
-
-// const Discover = ({ navigation, route }) => {
-//   const [trending, setTrending] = useState([]);
-//   const [isRefreshing, setIsRefreshing] = useState(false);
-
-//   const fetchTrendingMovies = useCallback(async () => {
-//     const result = await fetch(
-//       'https://api.themoviedb.org/3/trending/movie/week?api_key=fa5a9efc35bef208c722b23496593e0c',
-//     );
-
-//     if (result.ok) {
-//       const trendingMovies = await result.json();
-//       setTrending(trendingMovies);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     fetchTrendingMovies();
-//   }, []);
-
-//   const handleRefresh = useCallback(async () => {
-//     setIsRefreshing(true);
-//     await fetchTrendingMovies();
-//     setTimeout(() => {
-//       setIsRefreshing(false);
-//     }, 1000);
-//   });
-
-//   // useEffect(() => {
-//   //   if (newColorPalette) {
-//   //     setColorPalettes((palette) => [newColorPalette, ...palette]);
-//   //   }
-//   // }, [newColorPalette]); //? because only rendered once
-
-//   return (
-//     <FlatList
-//       style={styles.list}
-//       data={trending}
-//       // keyExtractor={(item) => item.results.id}
-//       renderItem={({ item }) => <Text>{item[0]}</Text>}
-//       refreshControl={
-//         <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
-//       }
-//     />
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   list: {
-//     padding: 10,
-//     backgroundColor: 'white',
-//   },
-//   title: {
-//     fontWeight: 'bold',
-//     color: '#2aa198',
-//     fontSize: 20,
-//     paddingBottom: 10,
-//   },
-// });
-
-// export default Discover;
-
 import React, { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  Text,
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { ActivityIndicator, View, StyleSheet, ScrollView } from 'react-native';
+import apiKey from '../assets/apikey';
+import MovieCarousel from '../Components/MovieCarousel';
+
+// const lists = [
+//   title: {
+//     "TOP RATED,
+//     "POPULAR",
+//   "IN THEATERS",
+//   "COMING SOON",}, list: {topRated,
+//     popular,
+//     inTheaters,
+//     upcoming,}
+// ]
 
 const Discover = ({ navigation }) => {
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-  const [popularity, setPopularity] = useState([]);
+  const [trending, setTrending] = useState([]);
+  const [popular, setPopular] = useState([]);
+  const [topRated, setTopRated] = useState([]);
+  const [inTheaters, setInTheaters] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
 
   useEffect(() => {
-    fetch(
-      'https://api.themoviedb.org/3/trending/movie/week?api_key=fa5a9efc35bef208c722b23496593e0c',
-    )
+    fetch(`https://api.themoviedb.org/3/trending/movie/week?${apiKey}`)
       .then((res) => res.json())
-      .then((result) => setData(result.results))
+      .then((result) => setTrending(result.results))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
     fetch(
-      'https://api.themoviedb.org/3/discover/movie?api_key=fa5a9efc35bef208c722b23496593e0c&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&year=2019',
+      `https://api.themoviedb.org/3/movie/top_rated?${apiKey}&language=en-US&page=1`,
     )
       .then((res) => res.json())
-      .then((result) => setPopularity(result.results))
+      .then((result) => setTopRated(result.results))
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://api.themoviedb.org/3/movie/popular?${apiKey}&language=en-US&page=1`,
+    )
+      .then((res) => res.json())
+      .then((result) => setPopular(result.results))
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://api.themoviedb.org/3/movie/upcoming?${apiKey}&language=en-US&page=1`,
+    )
+      .then((res) => res.json())
+      .then((result) => setUpcoming(result.results))
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://api.themoviedb.org/3/movie/now_playing?${apiKey}&language=en-US&page=1`,
+    )
+      .then((res) => res.json())
+      .then((result) => setInTheaters(result.results))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, []);
@@ -104,58 +73,35 @@ const Discover = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {isLoading ? (
-        <ActivityIndicator />
+        <ActivityIndicator color="#fec89a" />
       ) : (
-          <View style={styles.movieLists}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>TRENDING NOW</Text>
-            <View>
-              <FlatList
-                horizontal={true}
-                data={data}
-                keyExtractor={({ id }, index) => id.toString()}
-                renderItem={({ item }) => (
-                  <View>
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate('MovieDetails', item);
-                      }}
-                    >
-                      <Image
-                        style={styles.posters}
-                        source={{
-                          uri:
-                            'https://image.tmdb.org/t/p/w300/' + item.poster_path,
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
-            </View>
-            <View style={styles.movieLists}>
-              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>POPULAR</Text>
-              <FlatList
-                horizontal={true}
-                data={popularity}
-                keyExtractor={({ id }, index) => id.toString()}
-                renderItem={({ item }) => (
-                  <View>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('MovieDetails', item)}
-                    >
-                      <Image
-                        style={styles.posters}
-                        source={{
-                          uri:
-                            'https://image.tmdb.org/t/p/w300/' + item.poster_path,
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
-            </View>
-          </View>
+          <ScrollView>
+            <MovieCarousel
+              navigation={navigation}
+              title="TRENDING NOW"
+              list={trending}
+            />
+            <MovieCarousel
+              navigation={navigation}
+              title="TOP RATED"
+              list={topRated}
+            />
+            <MovieCarousel
+              navigation={navigation}
+              title="POPULAR"
+              list={popular}
+            />
+            <MovieCarousel
+              navigation={navigation}
+              title="IN THEATERS"
+              list={inTheaters}
+            />
+            <MovieCarousel
+              navigation={navigation}
+              title="COMING SOON"
+              list={upcoming}
+            />
+          </ScrollView>
         )}
     </View>
   );
@@ -165,6 +111,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     flex: 1,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   posters: {
     width: 70,

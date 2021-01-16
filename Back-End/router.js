@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const users = require('./controller/user.controller');
-const genres = require('./controller/genres.controller');
 
-router.get('/users/:id', users.getUser);
-router.get('/genres', genres.getGenres);
-// router.post('/events', event.postEvent);
+router.get('/users/:id', users.getUserById);
+router.get('/lists/:id', users.getListsByUser);
+router.put('/users/:id/:listName', users.addMovieToList);
+// router.delete('/lists/:name', users.deleteMovieFromList);
 
 module.exports = router;

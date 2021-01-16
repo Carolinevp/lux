@@ -1,73 +1,5 @@
-// import React from 'react';
-// import { View, Text, Image, StyleSheet } from 'react-native';
-// import { Button } from 'react-native-elements';
-// import { TextInput } from 'react-native';
-
-// const Login = ({ navigation }) => {
-//   return (
-//     <View style={styles.container}>
-//       <Image style={styles.logo} source={require('./logo.png')} />
-//       <TextInput style={styles.input} placeholder="Email" />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Password"
-//         secureTextEntry={true}
-//       />
-//       <View style={styles.signIn}>
-//         <Button
-//           title="Sign in"
-//           type="outline"
-//           style={styles.button}
-//           onPress={() => {
-//             navigation.navigate('AllTabs', { screen: 'UserProfile' });
-//           }}
-//         />
-//         <Text>Forget password?</Text>
-//       </View>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   input: {
-//     borderColor: 'grey',
-//     borderWidth: 1,
-//     borderRadius: 30,
-//     padding: 10,
-//   },
-//   container: {
-//     padding: 10,
-//     backgroundColor: 'white',
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   button: {
-//     borderRadius: 30,
-//     height: 40,
-//     backgroundColor: 'teal',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginTop: 20,
-//   },
-//   textButton: {
-//     color: 'white',
-//     fontWeight: 'bold',
-//   },
-//   logo: {
-//     width: 300,
-//     height: 105,
-//     marginBottom: 40,
-//   },
-//   signIn: {
-//     padding: 5,
-//   },
-// });
-
-// export default Login;
-
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -75,15 +7,27 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Button,
 } from 'react-native';
+import { UserContext } from '../UserContext';
 
-export default function Login({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function Login({
+  navigation,
+  readStorage,
+  saveStorage,
+  removeStorage,
+}) {
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    readStorage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={require('./logo2.png')} />
+      <Image style={styles.image} source={require('../assets/logo2.png')} />
+      {/* <Text>{user}</Text> */}
 
       <StatusBar style="auto" />
       <View style={styles.inputView}>
@@ -91,7 +35,7 @@ export default function Login({ navigation }) {
           style={styles.TextInput}
           placeholder="Email"
           placeholderTextColor="#003f5c"
-          onChangeText={(Email) => setEmail(Email)}
+        // onChangeText={(Email) => setEmail(Email)}
         />
       </View>
 
@@ -101,7 +45,7 @@ export default function Login({ navigation }) {
           placeholder="Password"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
-          onChangeText={(Password) => setPassword(Password)}
+        // onChangeText={(Password) => setPassword(Password)}
         />
       </View>
 
@@ -109,10 +53,19 @@ export default function Login({ navigation }) {
         <Text style={styles.forgot_button}>Forgot Password?</Text>
       </TouchableOpacity>
 
+      {/* <Button onPress={saveStorage()} title="save data" />
+      <Button onPress={() => readStorage()} title="show data" />
+      <Button onPress={() => removeStorage()} title="delete data" /> */}
+
       <TouchableOpacity
         style={styles.loginBtn}
         onPress={() => {
-          navigation.navigate('AllTabs', { screen: 'UserProfile' });
+          saveStorage();
+          readStorage(user);
+          navigation.navigate('AllTabs', {
+            screen: 'UserProfile',
+            // params: { email: email },
+          });
         }}
       >
         <Text style={styles.loginText}>LOGIN</Text>
