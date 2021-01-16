@@ -212,10 +212,10 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
               list={recommendations}
             />
             <Text> Cast: </Text>
-            <View>
+            <View style={styles.cast}>
               <FlatList
-                horizontal={true}
-                // numColumns={4}
+                // horizontal={true}
+                numColumns={3}
                 // columnWrapperStyle
                 data={credits.cast}
                 keyExtractor={({ id }, index) => id.toString()}
@@ -227,7 +227,7 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
                     // }}
                     >
                       <Image
-                        style={styles.posters}
+                        style={styles.castPicture}
                         source={{
                           uri:
                             'https://image.tmdb.org/t/p/w400/' +
@@ -235,8 +235,8 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
                         }}
                       />
                     </TouchableOpacity>
-                    <Text>{item.name}</Text>
-                    <Text>{item.character}</Text>
+                    <Text style={{ fontSize: 14 }}> {item.name}</Text>
+                    <Text style={{ fontSize: 10 }}>{item.character}</Text>
                   </View>
                 )}
               />
@@ -263,17 +263,6 @@ const styles = StyleSheet.create({
   },
   details: {
     marginLeft: 10,
-  },
-  box: {
-    width: 100,
-    height: 180,
-    backgroundColor: '#dbe7e4',
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    margin: 10,
-    alignItems: 'center',
-    flexWrap: 'wrap',
   },
   posters: {
     // flex: 1,
@@ -317,6 +306,30 @@ const styles = StyleSheet.create({
   titleCat: {
     fontWeight: 'bold',
     fontSize: 17,
+  },
+  castPicture: {
+    width: 110,
+    height: 160,
+    borderRadius: 2,
+    // marginTop: 25,
+    // marginHorizontal: 10,
+  },
+  cast: {
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // flex: 1,
+  },
+  box: {
+    width: 110,
+    height: 210,
+    borderRadius: 2,
+    backgroundColor: '#dbe7e4',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    margin: 10,
+    // alignItems: 'center',
+    // flexWrap: 'wrap',
   },
 });
 

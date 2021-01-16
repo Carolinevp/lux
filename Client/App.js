@@ -31,7 +31,16 @@ const MainStackNavigator = ({
 }) => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="UserProfile">
+      <Stack.Screen
+        name="UserProfile"
+        options={{
+          title: 'Profile',
+          headerStyle: {
+            backgroundColor: '#fae1dd',
+          },
+          headerTitleAlign: 'center',
+        }}
+      >
         {(props) => (
           <UserProfile
             watchlist={watchlist}
@@ -106,11 +115,20 @@ const DiscoverNavigator = ({
 }) => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Discover" component={Discover} />
+      <Stack.Screen
+        name="Discover"
+        component={Discover}
+        options={{
+          headerStyle: {
+            backgroundColor: '#fae1dd',
+          },
+          headerTitleAlign: 'center',
+        }}
+      />
       <Stack.Screen
         name="MovieDetails"
         options={{
-          title: '',
+          title: 'Details',
           headerStyle: {
             backgroundColor: '#fae1dd',
           },
@@ -261,10 +279,10 @@ const AllTabs = () => {
 };
 
 export default function App() {
+  //* IGNORE BELOW
   const [user, setUser] = useState();
 
   const values = useMemo(() => ({ user, setUser }), [user, setUser]);
-  // const user1 = 'Caroline';
 
   const setItemStorage = async (key, value) => {
     try {
@@ -314,6 +332,7 @@ export default function App() {
       setUser(() => [jsonObject]);
     });
   };
+  //* IGNORE ABOVE
 
   return (
     <NavigationContainer>
