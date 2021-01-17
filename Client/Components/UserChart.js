@@ -10,7 +10,22 @@ const UserChart = () => {
     { x: 'thriller', y: 5 },
     { x: 'action', y: 5 },
     { x: 'documentary', y: 10 },
+    // { x: 'adventure', y: 30 },
+    // { x: 'animation', y: 50 },
+    // { x: 'crime', y: 5 },
+    // { x: 'family', y: 5 },
+    // { x: 'fantasy', y: 10 },
+    // { x: 'history', y: 50 },
+    // { x: 'horror', y: 5 },
+    // { x: 'music', y: 5 },
+    // { x: 'mystery', y: 10 },
+    // { x: 'romance', y: 10 },
+    // { x: 'science fiction', y: 50 },
+    // { x: 'TV movie', y: 5 },
+    // { x: 'war', y: 5 },
+    // { x: 'western', y: 10 },
   ];
+
   const defaultGraphicData = [
     { x: 'comedy', y: 100 },
     { x: 'drama', y: 0 },

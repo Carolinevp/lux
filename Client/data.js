@@ -840,3 +840,66 @@ export const users = [
 //   total_pages: 1000,
 //   total_results: 20000,
 // };
+
+// fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/liked')
+//   .then((res) => {
+//     return res.json();
+//   })
+//   .then((res) => {
+//     const myPromises = res.map((item) => fetch(
+//       `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+//     ).then((res1) => { return res1.json() }));
+//     Promise.all(myPromises).then((results) => {
+//       setLiked([...liked, results]);
+//     })
+//     res.forEach((item) => {
+//       fetch(
+//         `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+//       ))
+//       .then((res1) => {
+//         return res1.json();
+//       })
+//       .then((result) => {
+//         console.log('result', result);
+//         setLiked([...liked, result]);
+//       });
+
+//     //! back up
+//     useEffect(() => {
+//       fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/liked')
+//         .then((res) => {
+//           console.log('res', res);
+//           return res.json();
+//         })
+//         .then((res) => {
+//           res.forEach((item) => {
+//             fetch(
+//               `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+//             )
+//               .then((res1) => {
+//                 console.log('res', res1);
+//                 return res1.json();
+//               })
+//               .then((result) => {
+//                 console.log('result', result);
+//                 setLiked([...liked, result]);
+//               });
+//           });
+//         })
+//         .catch((err) => {
+//           console.log(err);
+//         });
+//       // map((item) => {
+//       //   fetch(
+//       //     `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+//       //   )
+//       //     .then((res) => res.json())
+//       //     .then((result) => {
+//       //       console.log('result', result);
+//       //       setLiked([...liked, result]);
+//       //     })
+//       //     .catch((error) => console.error(error));
+//       //   // .finally(() => setLoading(false));
+//       // }, []);
+//       // eslint-disable-next-line react-hooks/exhaustive-deps
+//     }, []);

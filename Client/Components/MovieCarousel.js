@@ -24,10 +24,9 @@ const MovieCarousel = ({ navigation, title, list }) => {
           data={list}
           keyExtractor={({ id }, index) => id.toString()}
           renderItem={({ item }) => (
-            <View>
+            <View style={styles.posterBox}>
               <TouchableOpacity
                 onPress={() => {
-                  console.log('clicked');
                   // refresh();
                   navigation.navigate('MovieDetails', item);
                 }}
@@ -59,17 +58,16 @@ const styles = StyleSheet.create({
   posters: {
     width: 70,
     height: 100,
-    marginTop: 20,
-    marginRight: 10,
+    // marginTop: 20,
+    // marginRight: 10,
     borderRadius: 8,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 1,
-    // },
-    // shadowOpacity: 0.18,
-    // shadowRadius: 1.0,
-    // elevation: 1,
+  },
+  posterBox: {
+    borderRadius: 8,
+    marginTop: 20,
+    marginBottom: 10,
+    marginRight: 10,
+    elevation: 5,
   },
   movieLists: {
     flexDirection: 'column',

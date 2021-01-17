@@ -5,7 +5,12 @@ import UserLists from '../Components/UserLists';
 import UserProfileInfo from '../Components/UserProfileInfo';
 import { UserContext } from '../UserContext';
 import apiKey from '../assets/apikey';
-import getListsByUser from '../Services/ApiService';
+import { getListByUser } from '../Services/ApiService';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'VirtualizedLists should never be nested', // TODO: Remove when fixed
+]);
 
 const UserProfile = ({
   watchlist,
@@ -15,22 +20,127 @@ const UserProfile = ({
   lastSeen,
   navigation,
   setLiked,
+  setDisliked,
+  setWatchlist,
+  setFavourites,
+  setLastSeen,
 }) => {
   // const { user } = useContext(UserContext);
-  // useEffect(() => {
-  //   getListsByUser()
-  //     .then(list => list.)
-  //   fetch(
-  //     `https://api.themoviedb.org/3/movie/${route.params.id}/recommendations?${apiKey}&language=en-US&page=1`,
-  //   )
-  //     .then((res) => res.json())
-  //     .then((result) => {
-  //       setLiked(result.results);
-  //     })
-  //     .catch((error) => console.error(error));
-  //   // .finally(() => setLoading(false));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  useEffect(() => {
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/liked')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setLiked(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/disliked')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setDisliked(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/favourites')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setFavourites(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/want_to_see')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setWatchlist(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/last_seen')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setLastSeen(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <View style={styles.container}>
       <UserProfileInfo />
@@ -40,9 +150,9 @@ const UserProfile = ({
         renderItem={({ item }) => <Text>{item.name}</Text>}
       /> */}
       <UserChart />
-      <ScrollView horizontal={true}>
+      <ScrollView horizontal={true} style={styles.listBox}>
         <View>
-          {liked.length > 0 ? (
+          {lastSeen.length > 0 ? (
             <>
               <UserLists
                 navigation={navigation}
@@ -119,26 +229,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
   },
-  movies: {
-    flexDirection: 'row',
-  },
-  posters: {
-    width: 70,
-    height: 100,
-    marginTop: 20,
-    marginRight: 10,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
-    // elevation: 1,
-  },
-  movieLists: {
-    flexDirection: 'column',
+  listBox: {
+    marginLeft: 20,
   },
 });
 

@@ -21,6 +21,11 @@ import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import apiKey from '../assets/apikey';
 import MovieCarousel from '../Components/MovieCarousel';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'VirtualizedLists should never be nested', // TODO: Remove when fixed
+]);
 
 const { width } = Dimensions.get('window');
 

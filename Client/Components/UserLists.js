@@ -23,12 +23,15 @@ const UserLists = ({ navigation, title, userlist }) => {
                 navigation.navigate('MovieDetails', item);
               }}
             >
-              <Image
-                style={styles.posters}
-                source={{
-                  uri: 'https://image.tmdb.org/t/p/w400/' + item.poster_path,
-                }}
-              />
+              <View style={styles.posterBox}>
+                <Image
+                  style={styles.posters}
+                  resizeMode="contain"
+                  source={{
+                    uri: 'https://image.tmdb.org/t/p/w400/' + item.poster_path,
+                  }}
+                />
+              </View>
             </TouchableOpacity>
           </View>
         )}
@@ -38,26 +41,17 @@ const UserLists = ({ navigation, title, userlist }) => {
 };
 
 const styles = StyleSheet.create({
-  movies: {
-    flexDirection: 'row',
-  },
   posters: {
     width: 70,
     height: 100,
+    borderRadius: 8,
+  },
+  posterBox: {
+    borderRadius: 8,
     marginTop: 20,
     marginRight: 10,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
-    // elevation: 1,
-  },
-  movieLists: {
-    flexDirection: 'column',
+    marginBottom: 10,
+    elevation: 5,
   },
 });
 

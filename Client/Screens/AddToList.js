@@ -11,6 +11,7 @@ const AddToList = ({
   addToLikedList,
   addToDislikedList,
   addToFavourites,
+  liked,
 }) => {
   return (
     <View style={styles.container}>
@@ -18,12 +19,14 @@ const AddToList = ({
         {' '}
         {route.params.title}{' '}
       </Text> */}
-      <Image
-        style={styles.posters}
-        source={{
-          uri: 'https://image.tmdb.org/t/p/w400/' + route.params.poster_path,
-        }}
-      />
+      <View style={styles.posterBox}>
+        <Image
+          style={styles.posters}
+          source={{
+            uri: 'https://image.tmdb.org/t/p/w400/' + route.params.poster_path,
+          }}
+        />
+      </View>
       <View style={styles.icons}>
         <TouchableOpacity
           onPress={() => {
@@ -39,7 +42,11 @@ const AddToList = ({
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            addToLikedList(route.params);
+            addToLikedList(
+              '5ff9c7cfdf2f636e9546fe1c',
+              'liked',
+              route.params.id,
+            );
             Alert.alert('movie added to liked movies');
           }}
         >
@@ -77,17 +84,7 @@ const styles = StyleSheet.create({
   posters: {
     width: 310,
     height: 440,
-    marginTop: 20,
-    marginRight: 10,
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
-    // elevation: 1,
   },
   icons: {
     justifyContent: 'space-around',
@@ -98,6 +95,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     margin: 20,
+  },
+  posterBox: {
+    borderRadius: 8,
+    marginTop: 20,
+    marginRight: 10,
+    marginBottom: 10,
+    elevation: 5,
   },
 });
 

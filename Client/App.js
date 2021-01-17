@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Alert, View, Text } from 'react-native';
+import { Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import Login from './Screens/Login';
 import UserProfile from './Screens/UserProfile';
@@ -12,7 +12,8 @@ import Search from './Screens/Search';
 import { UserContext } from './UserContext';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage';
-// import users from './data';
+import { addMovieToList } from './Services/ApiService';
+import apiKey from './assets/apikey';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,6 +29,10 @@ const MainStackNavigator = ({
   addToFavourites,
   lastSeen,
   setLiked,
+  setLastSeen,
+  setWatchlist,
+  setDisliked,
+  setFavourites,
 }) => {
   return (
     <Stack.Navigator>
@@ -49,6 +54,10 @@ const MainStackNavigator = ({
             favourites={favourites}
             lastSeen={lastSeen}
             setLiked={setLiked}
+            setLastSeen={setLastSeen}
+            setWatchlist={setWatchlist}
+            setDisliked={setDisliked}
+            setFavourites={setFavourites}
             {...props}
           />
         )}
@@ -91,6 +100,7 @@ const MainStackNavigator = ({
             addToDislikedList={addToDislikedList}
             addToWatchlist={addToWatchlist}
             addToFavourites={addToFavourites}
+            liked={liked}
             {...props}
             options={({ route }) => ({ title: route.params.title })}
           />
@@ -183,22 +193,57 @@ const AllTabs = () => {
     }
   }
 
-  function addToLikedList(movie) {
-    if (watchlist.includes(movie)) {
-      watchlist.splice(watchlist.indexOf(movie), 1);
-      setWatchlist(() => [...watchlist]);
-    }
-    if (disliked.includes(movie)) {
-      disliked.splice(disliked.indexOf(movie), 1);
-      setDisliked(() => [...disliked]);
-    }
-    if (!liked.includes(movie)) {
-      setLiked(() => [...liked, movie]);
-    } else {
-      Alert.alert('movie already in list');
-    }
-    setLastSeen(() => [movie]);
+  // function addToLikedList(movie) {
+  //   if (watchlist.includes(movie)) {
+  //     watchlist.splice(watchlist.indexOf(movie), 1);
+  //     setWatchlist(() => [...watchlist]);
+  //   }
+  //   if (disliked.includes(movie)) {
+  //     disliked.splice(disliked.indexOf(movie), 1);
+  //     setDisliked(() => [...disliked]);
+  //   }
+  //   if (!liked.includes(movie)) {
+  //     setLiked(() => [...liked, movie]);
+  //   } else {
+  //     Alert.alert('movie already in list');
+  //   }
+  //   setLastSeen(() => [movie]);
+  // }
+
+  function addToLikedList(id, listName, movieToAdd) {
+    addMovieToList(id, listName, movieToAdd);
+    fetch(
+      `https://api.themoviedb.org/3/movie/${movieToAdd}?${apiKey}&language=en-US`,
+    )
+      .then((res1) => {
+        res1.json();
+        console.log('RESULT', res1);
+      })
+      .catch((err) => {
+        console.log('BIG ERROR', err);
+      });
+    console.log('movieToAdd', movieToAdd);
   }
+
+  // addMovieToList(id, listName, movieToAdd).then((movie) => {
+  //   console.log('movie', movie);
+  // });
+  // export function addMovieToList(id, listName, movieToAdd) {
+  //   return fetchRequest('/lists', {
+  //     method: 'PUT',
+  //     body: JSON.stringify(id, listName, movieToAdd),
+  //   });
+  // }
+
+  // function fetchRequest(path, options) {
+  //   return fetch(BASE_URL + path, options)
+  //     .then((res) => (res.status < 400 ? res : Promise.reject(res)))
+  //     .then((res) => (res.status !== 204 ? res.json() : res))
+  //     .catch((err) => {
+  //       // console.log(path, options.method || 'GET');
+  //       console.log('Error:', err);
+  //     });
+  // }
 
   function addToDislikedList(movie) {
     if (watchlist.includes(movie)) {
@@ -249,6 +294,10 @@ const AllTabs = () => {
             addToFavourites={addToFavourites}
             liked={liked}
             setLiked={setLiked}
+            setLastSeen={setLastSeen}
+            setWatchlist={setWatchlist}
+            setDisliked={setDisliked}
+            setFavourites={setFavourites}
             addToDislikedList={addToDislikedList}
             disliked={disliked}
             favourites={favourites}
