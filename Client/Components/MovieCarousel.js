@@ -47,19 +47,14 @@ const MovieCarousel = ({ navigation, title, list }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    flex: 1,
-  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#6d6875',
   },
   posters: {
     width: 70,
     height: 100,
-    // marginTop: 20,
-    // marginRight: 10,
     borderRadius: 8,
   },
   posterBox: {
@@ -67,12 +62,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     marginRight: 10,
-    elevation: 5,
+    elevation: 3,
   },
   movieLists: {
     flexDirection: 'column',
     marginTop: 20,
-    marginLeft: 5,
+    // marginLeft: 5,
   },
 });
 

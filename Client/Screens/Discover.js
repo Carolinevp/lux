@@ -75,7 +75,7 @@ const Discover = ({ navigation }) => {
       {isLoading ? (
         <ActivityIndicator color="#fec89a" />
       ) : (
-          <ScrollView>
+          <ScrollView style={styles.lists}>
             <MovieCarousel
               navigation={navigation}
               title="TRENDING NOW"
@@ -112,29 +112,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  posters: {
-    width: 70,
-    height: 100,
-    marginTop: 20,
-    marginRight: 10,
-    borderRadius: 8,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 1,
-    // },
-    // shadowOpacity: 0.18,
-    // shadowRadius: 1.0,
-    // elevation: 1,
-  },
-  movieLists: {
-    flexDirection: 'column',
-    marginTop: 20,
-    marginLeft: 5,
+  lists: {
+    marginLeft: 10,
   },
 });
 

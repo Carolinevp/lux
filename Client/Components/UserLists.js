@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginRight: 10,
     marginBottom: 10,
-    elevation: 5,
+    elevation: 3,
   },
 });
 

@@ -1,27 +1,25 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
 import {
   ScrollView,
   View,
   Text,
   Image,
+  ImageBackground,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
   FlatList,
-  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { VictoryPie } from 'victory-native';
-import ViewMoreText from 'react-native-view-more-text';
-// import { movies } from '../data';
 import { AntDesign } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import apiKey from '../assets/apikey';
-import MovieCarousel from '../Components/MovieCarousel';
 import { LogBox } from 'react-native';
+import Details from '../Components/MovieDetails-details';
+import Cast from '../Components/MovieDetails-cast';
+import Crew from '../Components/MovieDetails-crew';
 
 LogBox.ignoreLogs([
   'VirtualizedLists should never be nested', // TODO: Remove when fixed
@@ -43,9 +41,12 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
   const graphicColor = ['#ffafcc', '#83c5be', '#d00000'];
 
   const [details, setDetails] = useState([]);
-  const [credits, setCredits] = useState([]);
+  const [, setCredits] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [recommendations, setRecommendations] = useState([]);
+  const [detailsClicked, setDetailsClicked] = useState(true);
+  const [castClicked, setCastClicked] = useState(false);
+  const [crewClicked, setCrewClicked] = useState(false);
 
   // useEffect(() => {
   //   const unsubscribe = navigation.addListener('focus', () => {
@@ -95,37 +96,13 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function isInList(movie) {
-    let icon;
-    // if (watchlist.includes(movie)) {
-    //   icon = (
-    //     <MaterialCommunityIcons
-    //       name="eye-plus-outline"
-    //       size={34}
-    //       color="#f6bd60"
-    //     />
-    //   );
-    // }
-    if (liked.includes(movie)) {
-      icon = <AntDesign name="like2" size={34} color="#83c5be" />;
-    }
-    if (disliked.includes(movie)) {
-      icon = <AntDesign name="dislike2" size={34} color="#d00000" />;
-    }
-    if (favourites.includes(movie)) {
-      icon = <Ionicons name="md-heart-sharp" size={34} color="#ffafcc" />;
-    }
-    return icon;
-  }
-
-  // console.log('favourites', favourites);
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {isLoading ? (
         <ActivityIndicator color="#fec89a" />
       ) : (
           <View>
-            <Image
+            <ImageBackground
               style={styles.secondaryPicture}
               source={{
                 uri: 'https://image.tmdb.org/t/p/w400/' + details.backdrop_path,
@@ -137,13 +114,6 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
                   flex: 1,
                 }}
               >
-                <Image
-                  style={styles.posters}
-                  source={{
-                    uri: 'https://image.tmdb.org/t/p/w400/' + details.poster_path,
-                  }}
-                  resizeMode="contain"
-                />
                 {favourites.includes(details) ? (
                   <Ionicons
                     name="md-heart-sharp"
@@ -163,7 +133,7 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
                     // horizontal={true}
                     numColumns={3}
                     data={details.genres}
-                    keyExtractor={({ id }, index) => id.toString()}
+                    keyExtractor={({ id }) => id.toString()}
                     renderItem={({ item }) => <Text>{item.name + ' '}</Text>}
                   />
                   <TouchableOpacity
@@ -183,72 +153,80 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
                 labelRadius={({ innerRadius }) => innerRadius + 25}
               />
             </View>
-            <View style={styles.details}>
-              <Text> details </Text>
-              <Text>{details.tagline}</Text>
-              <Text style={styles.titleCat}>Year:</Text>
-              <Text>{moment(details.release_date).format('YYYY')}</Text>
-              <Text style={styles.titleCat}>Synopsis:</Text>
-              <ViewMoreText
-                numberOfLines={2}
-                // renderViewMore={this.renderViewMore}
-                // renderViewLess={this.renderViewLess}
-                // textStyle={{ textAlign: 'center' }}
-                style={{ width: 300 }}
-              >
-                <Text>{details.overview}</Text>
-              </ViewMoreText>
-
-              <Text style={styles.titleCat}>Genre:</Text>
-              <FlatList
-                horizontal={true}
-                data={details.genres}
-                keyExtractor={({ id }, index) => id.toString()}
-                renderItem={({ item }) => <Text>{item.name + ' '}</Text>}
-              />
-              {/* <Text>Country:</Text>
-              <Text>{details.production_countries[0].name}</Text> */}
-              <Text style={styles.titleCat}>Language:</Text>
-              <Text>{details.original_language}</Text>
-            </View>
-            <MovieCarousel
-              navigation={navigation}
-              title="You might also like:"
-              list={recommendations}
+            <Image
+              style={styles.posters}
+              source={{
+                uri: 'https://image.tmdb.org/t/p/w400/' + details.poster_path,
+              }}
+              resizeMode="contain"
             />
-            <Text> Cast: </Text>
-            <View style={styles.cast}>
-              <FlatList
-                // horizontal={true}
-                numColumns={3}
-                // columnWrapperStyle
-                data={credits.cast}
-                keyExtractor={({ id }, index) => id.toString()}
-                renderItem={({ item }) => (
-                  <View style={styles.box}>
-                    <TouchableOpacity
-                    // onPress={() => {
-                    //   navigation.navigate('MovieDetails', item);
-                    // }}
-                    >
-                      <Image
-                        style={styles.castPicture}
-                        source={{
-                          uri:
-                            'https://image.tmdb.org/t/p/w400/' +
-                            item.profile_path,
-                        }}
-                      />
-                    </TouchableOpacity>
-                    <Text style={{ fontSize: 14 }}> {item.name}</Text>
-                    <Text style={{ fontSize: 10 }}>{item.character}</Text>
-                  </View>
-                )}
-              />
+            <View>
+              <View style={styles.TabBarMainContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setDetailsClicked(true);
+                    setCastClicked(false);
+                    setCrewClicked(false);
+                  }}
+                  activeOpacity={0.4}
+                  style={styles.button}
+                >
+                  <Text style={styles.TextStyle}> DETAILS </Text>
+                </TouchableOpacity>
+
+                <View style={{ height: 50, backgroundColor: '#fff', width: 2 }} />
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setDetailsClicked(false);
+                    setCastClicked(true);
+                    setCrewClicked(false);
+                  }}
+                  activeOpacity={0.4}
+                  style={styles.button}
+                >
+                  <Text style={styles.TextStyle}> CAST </Text>
+                </TouchableOpacity>
+
+                <View style={{ height: 50, backgroundColor: '#fff', width: 2 }} />
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setDetailsClicked(false);
+                    setCastClicked(false);
+                    setCrewClicked(true);
+                  }}
+                  activeOpacity={0.4}
+                  style={styles.button}
+                >
+                  <Text style={styles.TextStyle}> CREW </Text>
+                </TouchableOpacity>
+              </View>
+              <ScrollView>
+                {detailsClicked === true ? (
+                  <Details
+                    navigation={navigation}
+                    details={details}
+                    recommendations={recommendations}
+                  />
+                ) : (
+                    <></>
+                  )}
+                {castClicked === true ? (
+                  <Cast route={route} setLoading={setLoading} />
+                ) : (
+                    <></>
+                  )}
+                {crewClicked === true ? (
+                  <Crew route={route} setLoading={setLoading} />
+                ) : (
+                    <></>
+                  )}
+              </ScrollView>
             </View>
           </View>
         )}
-    </ScrollView>
+    </View>
   );
 };
 
@@ -265,38 +243,26 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-evenly',
     // alignItems: 'center',
     backgroundColor: '#d8e2dc',
-  },
-  details: {
-    marginLeft: 10,
+    maxHeight: 105,
+    // zIndex: 1,
   },
   posters: {
-    // flex: 1,
     width: 70,
     height: 100,
-    marginTop: 20,
-    marginRight: 0,
-    marginLeft: 10,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
-    // elevation: 1,
+    top: 180,
+    left: 15,
+    position: 'absolute',
+    borderWidth: 0.5,
+    // borderRadius: 8,
+    borderColor: 'white',
   },
   secondaryPicture: {
-    height: 220,
+    height: 210,
     width: width,
-  },
-  button: {
-    borderRadius: 50,
-    borderColor: 'black',
   },
   posterIcon: {
     position: 'absolute',
-    top: 12,
+    top: 5,
     left: 60,
     right: 0,
     bottom: 0,
@@ -305,36 +271,28 @@ const styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    top: 15,
+    top: 5,
     left: 100,
   },
-  titleCat: {
-    fontWeight: 'bold',
-    fontSize: 17,
+  TabBarMainContainer: {
+    justifyContent: 'space-around',
+    height: 40,
+    flexDirection: 'row',
+    width: '100%',
   },
-  castPicture: {
-    width: 110,
-    height: 160,
-    borderRadius: 2,
-    // marginTop: 25,
-    // marginHorizontal: 10,
+  button: {
+    height: 40,
+    paddingTop: 5,
+    paddingBottom: 5,
+    backgroundColor: '#f8edeb',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexGrow: 1,
   },
-  cast: {
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // flex: 1,
-  },
-  box: {
-    width: 110,
-    height: 210,
-    borderRadius: 2,
-    backgroundColor: '#dbe7e4',
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    margin: 10,
-    // alignItems: 'center',
-    // flexWrap: 'wrap',
+  TextStyle: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#6d6875',
   },
 });
 

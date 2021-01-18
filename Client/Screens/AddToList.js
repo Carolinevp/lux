@@ -30,7 +30,7 @@ const AddToList = ({
       <View style={styles.icons}>
         <TouchableOpacity
           onPress={() => {
-            addToWatchlist(route.params);
+            addToWatchlist('5ff9c7cfdf2f636e9546fe1c', route.params.id);
             Alert.alert('movie added to watchlist');
           }}
         >
@@ -42,11 +42,7 @@ const AddToList = ({
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            addToLikedList(
-              '5ff9c7cfdf2f636e9546fe1c',
-              'liked',
-              route.params.id,
-            );
+            addToLikedList('5ff9c7cfdf2f636e9546fe1c', route.params.id);
             Alert.alert('movie added to liked movies');
           }}
         >
@@ -54,7 +50,7 @@ const AddToList = ({
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            addToDislikedList(route.params);
+            addToDislikedList('5ff9c7cfdf2f636e9546fe1c', route.params.id);
             Alert.alert('movie added to disliked movies');
           }}
         >
@@ -62,7 +58,7 @@ const AddToList = ({
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            addToFavourites(route.params);
+            addToFavourites('5ff9c7cfdf2f636e9546fe1c', route.params.id);
             Alert.alert('movie added to favourites');
           }}
         >

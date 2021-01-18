@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Text, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, ScrollView, ActivityIndicator } from 'react-native';
 import UserChart from '../Components/UserChart';
 import UserLists from '../Components/UserLists';
 import UserProfileInfo from '../Components/UserProfileInfo';
-import { UserContext } from '../UserContext';
+// import { UserContext } from '../UserContext';
 import apiKey from '../assets/apikey';
-import { getListByUser } from '../Services/ApiService';
+// import { getListByUser } from '../Services/ApiService';
 import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs([
@@ -26,6 +26,8 @@ const UserProfile = ({
   setLastSeen,
 }) => {
   // const { user } = useContext(UserContext);
+  const [isLoading, setLoading] = useState(true);
+
   useEffect(() => {
     fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/liked')
       .then((res) => {
@@ -45,8 +47,8 @@ const UserProfile = ({
       })
       .catch((err) => {
         console.log(err);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -68,7 +70,8 @@ const UserProfile = ({
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -91,7 +94,8 @@ const UserProfile = ({
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -114,7 +118,8 @@ const UserProfile = ({
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -137,7 +142,8 @@ const UserProfile = ({
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -150,73 +156,77 @@ const UserProfile = ({
         renderItem={({ item }) => <Text>{item.name}</Text>}
       /> */}
       <UserChart />
-      <ScrollView horizontal={true} style={styles.listBox}>
-        <View>
-          {lastSeen.length > 0 ? (
-            <>
-              <UserLists
-                navigation={navigation}
-                title="Last seen"
-                userlist={lastSeen}
-              />
-            </>
-          ) : (
-              <></>
-            )}
-        </View>
-        <View>
-          {watchlist.length > 0 ? (
-            <>
-              <UserLists
-                navigation={navigation}
-                title="Want to watch"
-                userlist={watchlist}
-              />
-            </>
-          ) : (
-              <></>
-            )}
-        </View>
-        <View>
-          {liked.length > 0 ? (
-            <>
-              <UserLists
-                navigation={navigation}
-                title="Liked"
-                userlist={liked}
-              />
-            </>
-          ) : (
-              <></>
-            )}
-        </View>
-        <View>
-          {disliked.length > 0 ? (
-            <>
-              <UserLists
-                navigation={navigation}
-                title="Disliked"
-                userlist={disliked}
-              />
-            </>
-          ) : (
-              <></>
-            )}
-        </View>
-        <View>
-          {favourites.length > 0 ? (
-            <>
-              <UserLists
-                navigation={navigation}
-                title="Favourites"
-                userlist={favourites}
-              />
-            </>
-          ) : (
-              <></>
-            )}
-        </View>
-      </ScrollView>
+      {isLoading ? (
+        <ActivityIndicator color="#fec89a" />
+      ) : (
+          <ScrollView horizontal={true} style={styles.listBox}>
+            <View>
+              {lastSeen.length > 0 ? (
+                <>
+                  <UserLists
+                    navigation={navigation}
+                    title="Last seen"
+                    userlist={lastSeen}
+                  />
+                </>
+              ) : (
+                  <></>
+                )}
+            </View>
+            <View>
+              {watchlist.length > 0 ? (
+                <>
+                  <UserLists
+                    navigation={navigation}
+                    title="Want to watch"
+                    userlist={watchlist}
+                  />
+                </>
+              ) : (
+                  <></>
+                )}
+            </View>
+            <View>
+              {liked.length > 0 ? (
+                <>
+                  <UserLists
+                    navigation={navigation}
+                    title="Liked"
+                    userlist={liked}
+                  />
+                </>
+              ) : (
+                  <></>
+                )}
+            </View>
+            <View>
+              {disliked.length > 0 ? (
+                <>
+                  <UserLists
+                    navigation={navigation}
+                    title="Disliked"
+                    userlist={disliked}
+                  />
+                </>
+              ) : (
+                  <></>
+                )}
+            </View>
+            <View>
+              {favourites.length > 0 ? (
+                <>
+                  <UserLists
+                    navigation={navigation}
+                    title="Favourites"
+                    userlist={favourites}
+                  />
+                </>
+              ) : (
+                  <></>
+                )}
+            </View>
+          </ScrollView>
+        )}
     </View>
   );
 };

@@ -4,15 +4,72 @@ export function getListsByUser() {
   return fetchRequest('/lists/:id');
 }
 
-export function addMovieToList(id, listName, movieToAdd) {
-  fetch('http://192.168.1.12:3001/lists', {
+// export function addMovieToList(id, listName, movieToAdd) {
+//   fetch('http://192.168.1.12:3001/lists', {
+//     method: 'PUT',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       id: id,
+//       listName: listName,
+//       movieToAdd: movieToAdd,
+//     }),
+//   })
+//     .then((res) => {
+//       return res.json();
+//     })
+//     .catch((err) => {
+//       console.log('ERROR IS:', err);
+//     });
+// }
+
+export function addMovieToDislikedList(id, movieToAdd) {
+  fetch('http://192.168.1.12:3001/lists/disliked', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       id: id,
-      listName: listName,
+      movieToAdd: movieToAdd,
+    }),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .catch((err) => {
+      console.log('ERROR IS:', err);
+    });
+}
+
+export function addMovieToList(id, movieToAdd, movieList) {
+  fetch(`http://192.168.1.12:3001/lists/${movieList}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id: id,
+      movieToAdd: movieToAdd,
+    }),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .catch((err) => {
+      console.log('ERROR IS:', err);
+    });
+}
+
+export function addMovieToFavourites(id, movieToAdd) {
+  fetch('http://192.168.1.12:3001/lists/favourites', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id: id,
       movieToAdd: movieToAdd,
     }),
   })
