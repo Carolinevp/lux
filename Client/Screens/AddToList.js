@@ -31,7 +31,6 @@ const AddToList = ({
         <TouchableOpacity
           onPress={() => {
             addToWatchlist('5ff9c7cfdf2f636e9546fe1c', route.params.id);
-            Alert.alert('movie added to watchlist');
           }}
         >
           <MaterialCommunityIcons
@@ -43,7 +42,6 @@ const AddToList = ({
         <TouchableOpacity
           onPress={() => {
             addToLikedList('5ff9c7cfdf2f636e9546fe1c', route.params.id);
-            Alert.alert('movie added to liked movies');
           }}
         >
           <AntDesign name="like2" size={34} color="#83c5be" />
@@ -51,7 +49,6 @@ const AddToList = ({
         <TouchableOpacity
           onPress={() => {
             addToDislikedList('5ff9c7cfdf2f636e9546fe1c', route.params.id);
-            Alert.alert('movie added to disliked movies');
           }}
         >
           <AntDesign name="dislike2" size={34} color="#d00000" />
@@ -59,7 +56,6 @@ const AddToList = ({
         <TouchableOpacity
           onPress={() => {
             addToFavourites('5ff9c7cfdf2f636e9546fe1c', route.params.id);
-            Alert.alert('movie added to favourites');
           }}
         >
           <Ionicons name="md-heart-sharp" size={34} color="#ffafcc" />

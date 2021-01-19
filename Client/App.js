@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Alert } from 'react-native';
+import React, { useState } from 'react';
+import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import Login from './Screens/Login';
 import UserProfile from './Screens/UserProfile';
@@ -9,15 +9,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BottomTabBar from './Components/BottomTabBar';
 import Discover from './Screens/Discover';
 import Search from './Screens/Search';
-import { UserContext } from './UserContext';
 import { createStackNavigator } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-community/async-storage';
-import {
-  addMovieToList,
-  addMovieToDislikedList,
-  addMovieToLikedList,
-  addMovieToFavourites,
-} from './Services/ApiService';
+import { addMovieToList } from './Services/ApiService';
 import apiKey from './assets/apikey';
 
 const Stack = createStackNavigator();
@@ -49,6 +42,14 @@ const MainStackNavigator = ({
             backgroundColor: '#fae1dd',
           },
           headerTitleAlign: 'center',
+          headerLeft: null,
+          headerRight: () => (
+            <Image
+              // eslint-disable-next-line react-native/no-inline-styles
+              style={{ width: 28.5, height: 31.5, marginRight: 20 }}
+              source={require('./assets/logo1.png')}
+            />
+          ),
         }}
       >
         {(props) => (
@@ -69,19 +70,20 @@ const MainStackNavigator = ({
       </Stack.Screen>
       <Stack.Screen
         name="MovieDetails"
-        options={{
-          title: '',
+        options={({ route }) => ({
+          title: route.params.title,
           headerStyle: {
             backgroundColor: '#fae1dd',
           },
           headerTitleAlign: 'center',
-        }}
+        })}
       >
         {(props) => (
           <MovieDetails
             liked={liked}
             disliked={disliked}
             favourites={favourites}
+            watchlist={watchlist}
             {...props}
             options={{
               gestureEnabled: true,
@@ -127,6 +129,7 @@ const DiscoverNavigator = ({
   liked,
   disliked,
   favourites,
+  watchlist,
 }) => {
   return (
     <Stack.Navigator>
@@ -138,23 +141,25 @@ const DiscoverNavigator = ({
             backgroundColor: '#fae1dd',
           },
           headerTitleAlign: 'center',
+          headerLeft: null,
         }}
       />
       <Stack.Screen
         name="MovieDetails"
-        options={{
-          title: 'Details',
+        options={({ route }) => ({
+          title: route.params.title,
           headerStyle: {
             backgroundColor: '#fae1dd',
           },
           headerTitleAlign: 'center',
-        }}
+        })}
       >
         {(props) => (
           <MovieDetails
             liked={liked}
             disliked={disliked}
             favourites={favourites}
+            watchlist={watchlist}
             {...props}
           />
         )}
@@ -189,86 +194,113 @@ const AllTabs = () => {
   const [liked, setLiked] = useState([]);
   const [disliked, setDisliked] = useState([]);
   const [favourites, setFavourites] = useState([]);
-  const [nbSeen, setNbSeen] = useState(0);
 
-  // function addToWatchlist(movie) {
-  //   if (!watchlist.includes(movie)) {
-  //     setWatchlist(() => [...watchlist, movie]);
-  //   } else {
-  //     Alert.alert('movie already in list');
-  //   }
-  // }
+  const addToWatchlist = async (id, movieToAdd) => {
+    await addMovieToList(id, movieToAdd, 'watchlist');
+    fetch(
+      `https://api.themoviedb.org/3/movie/${movieToAdd}?${apiKey}&language=en-US`,
+    )
+      .then((res1) => {
+        return res1.json();
+      })
+      .then((movie) => {
+        setWatchlist([...watchlist, movie]);
+        if (!disliked.includes(movie)) {
+          disliked.splice(disliked.indexOf(movie), 1);
+          setDisliked(() => [...disliked]);
+        }
+        if (!liked.includes(movie)) {
+          liked.splice(liked.indexOf(movie), 1);
+          setLiked(() => [...liked]);
+        }
+        if (!favourites.includes(movie)) {
+          favourites.splice(favourites.indexOf(movie), 1);
+          setFavourites(() => [...favourites]);
+        }
+      })
+      .catch((err) => {
+        console.log('BIG ERROR', err);
+      });
+  };
 
-  // function addToLikedList(movie) {
-  //   if (watchlist.includes(movie)) {
-  //     watchlist.splice(watchlist.indexOf(movie), 1);
-  //     setWatchlist(() => [...watchlist]);
-  //   }
-  //   if (disliked.includes(movie)) {
-  //     disliked.splice(disliked.indexOf(movie), 1);
-  //     setDisliked(() => [...disliked]);
-  //   }
-  //   if (!liked.includes(movie)) {
-  //     setLiked(() => [...liked, movie]);
-  //   } else {
-  //     Alert.alert('movie already in list');
-  //   }
-  //   setLastSeen(() => [movie]);
-  // }
+  const addToDislikedList = async (id, movieToAdd) => {
+    await addMovieToList(id, movieToAdd, 'disliked');
+    fetch(
+      `https://api.themoviedb.org/3/movie/${movieToAdd}?${apiKey}&language=en-US`,
+    )
+      .then((res1) => {
+        return res1.json();
+      })
+      .then((movie) => {
+        setDisliked([...disliked, movie]);
+        if (!watchlist.includes(movie)) {
+          watchlist.splice(watchlist.indexOf(movie), 1);
+          setWatchlist(() => [...watchlist]);
+        }
+        if (!liked.includes(movie)) {
+          liked.splice(liked.indexOf(movie), 1);
+          setLiked(() => [...disliked]);
+        }
+        if (!favourites.includes(movie)) {
+          favourites.splice(favourites.indexOf(movie), 1);
+          setFavourites(() => [...favourites]);
+        }
+        setLastSeen(() => [movie]);
+      })
+      .catch((err) => {
+        console.log('BIG ERROR', err);
+      });
+  };
 
-  function addToWatchlist(id, movieToAdd) {
-    addMovieToList(id, movieToAdd, 'want_to_see');
-  }
+  const addToLikedList = async (id, movieToAdd) => {
+    await addMovieToList(id, movieToAdd, 'liked');
+    fetch(
+      `https://api.themoviedb.org/3/movie/${movieToAdd}?${apiKey}&language=en-US`,
+    )
+      .then((res1) => {
+        return res1.json();
+      })
+      .then((movie) => {
+        setLiked(() => [...liked, movie]);
+        if (!watchlist.includes(movie)) {
+          watchlist.splice(watchlist.indexOf(movie), 1);
+          setWatchlist(() => [...watchlist]);
+        }
+        if (!disliked.includes(movie)) {
+          disliked.splice(disliked.indexOf(movie), 1);
+          setDisliked(() => [...disliked]);
+        }
+        setLastSeen(() => [movie]);
+      })
+      .catch((err) => {
+        console.log('BIG ERROR', err);
+      });
+  };
 
-  function addToLikedList(id, movieToAdd) {
-    return addMovieToList(id, movieToAdd, 'liked');
-  }
-
-  // function addToDislikedList(movie) {
-  //   if (watchlist.includes(movie)) {
-  //     watchlist.splice(watchlist.indexOf(movie), 1);
-  //     setWatchlist(() => [...watchlist]);
-  //   }
-  //   if (favourites.includes(movie)) {
-  //     favourites.splice(favourites.indexOf(movie), 1);
-  //     setFavourites(() => [...favourites]);
-  //   }
-  //   if (liked.includes(movie)) {
-  //     liked.splice(liked.indexOf(movie), 1);
-  //     setLiked(() => [...liked]);
-  //   }
-  //   if (!disliked.includes(movie)) {
-  //     setDisliked(() => [...disliked, movie]);
-  //   } else {
-  //     Alert.alert('movie already in list');
-  //   }
-  //   setLastSeen(() => [movie]);
-  // }
-
-  function addToDislikedList(id, movieToAdd) {
-    addMovieToList(id, movieToAdd, 'disliked');
-  }
-
-  // function addToFavourites(movie) {
-  //   if (disliked.includes(movie)) {
-  //     disliked.splice(disliked.indexOf(movie), 1);
-  //     setDisliked(() => [...disliked]);
-  //   }
-  //   if (watchlist.includes(movie)) {
-  //     watchlist.splice(watchlist.indexOf(movie), 1);
-  //     setWatchlist(() => [...watchlist]);
-  //   }
-  //   if (!favourites.includes(movie)) {
-  //     setFavourites(() => [...favourites, movie]);
-  //   } else {
-  //     Alert.alert('movie already in list');
-  //   }
-  //   setLastSeen(() => [movie]);
-  // }
-
-  function addToFavourites(id, movieToAdd) {
-    addMovieToList(id, movieToAdd, 'favourites');
-  }
+  const addToFavourites = async (id, movieToAdd) => {
+    await addMovieToList(id, movieToAdd, 'favourites');
+    fetch(
+      `https://api.themoviedb.org/3/movie/${movieToAdd}?${apiKey}&language=en-US`,
+    )
+      .then((res1) => {
+        return res1.json();
+      })
+      .then((movie) => {
+        setFavourites([...favourites, movie]);
+        if (!watchlist.includes(movie)) {
+          watchlist.splice(watchlist.indexOf(movie), 1);
+          setWatchlist(() => [...watchlist]);
+        }
+        if (!disliked.includes(movie)) {
+          disliked.splice(disliked.indexOf(movie), 1);
+          setDisliked(() => [...disliked]);
+        }
+        setLastSeen(() => [movie]);
+      })
+      .catch((err) => {
+        console.log('BIG ERROR', err);
+      });
+  };
 
   return (
     <Tab.Navigator tabBar={(props) => <BottomTabBar {...props} />}>
@@ -315,78 +347,14 @@ const AllTabs = () => {
 };
 
 export default function App() {
-  //* IGNORE BELOW
-  const [user, setUser] = useState();
-
-  const values = useMemo(() => ({ user, setUser }), [user, setUser]);
-
-  const setItemStorage = async (key, value) => {
-    try {
-      await AsyncStorage.setItem(key, JSON.stringify(value));
-    } catch (err) {
-      console.log('saving data error: ', err);
-    }
-  };
-
-  const removeItemStorage = async (key) => {
-    try {
-      await AsyncStorage.removeItem(key);
-    } catch (err) {
-      console.log('removing data error: ', err);
-    }
-  };
-
-  const getItemStorage = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      if (value !== null) {
-        return value;
-      }
-    } catch (err) {
-      console.log('reading data error: ', err);
-    }
-  };
-  const users = {
-    id: 1,
-    name: 'Caroline Victor-Pujebet',
-    email: 'caroline_pujebet@hotmail.com',
-    profile_picture: 'T0WU5R8NT-U01C4AC9BUY-93e74dc2edb4-512.jpg',
-  };
-
-  function saveStorage() {
-    setItemStorage('User', users);
-  }
-
-  const removeStorage = () => {
-    removeItemStorage('User');
-    setUser('');
-  };
-
-  const readStorage = async () => {
-    getItemStorage('User').then((result) => {
-      let jsonObject = JSON.parse(result);
-      setUser(() => [jsonObject]);
-    });
-  };
-  //* IGNORE ABOVE
-
   return (
     <NavigationContainer>
-      <UserContext.Provider value={values}>
-        <Stack.Navigator headerMode="none">
-          <Stack.Screen name="Login">
-            {(props) => (
-              <Login
-                saveStorage={saveStorage}
-                readStorage={readStorage}
-                removeStorage={removeStorage}
-                {...props}
-              />
-            )}
-          </Stack.Screen>
-          <Stack.Screen name="AllTabs" component={AllTabs} />
-        </Stack.Navigator>
-      </UserContext.Provider>
+      <Stack.Navigator headerMode="none">
+        <Stack.Screen name="Login">
+          {(props) => <Login {...props} />}
+        </Stack.Screen>
+        <Stack.Screen name="AllTabs" component={AllTabs} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

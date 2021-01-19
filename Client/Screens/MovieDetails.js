@@ -13,8 +13,8 @@ import {
   FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { VictoryPie } from 'victory-native';
 import { AntDesign } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import apiKey from '../assets/apikey';
 import { LogBox } from 'react-native';
 import Details from '../Components/MovieDetails-details';
@@ -27,18 +27,26 @@ LogBox.ignoreLogs([
 
 const { width } = Dimensions.get('window');
 
-const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
+const MovieDetails = ({
+  navigation,
+  route,
+  liked,
+  disliked,
+  favourites,
+  watchlist,
+}) => {
+  //? To add when multiple number of user for stats
   // const data = [
   //   { x: 'favourite', y: favourites.length },
   //   { x: 'liked', y: liked.length },
   //   { x: 'unliked', y: disliked.length },
   // ];
-  const data = [
-    { x: 'favourite', y: 10 },
-    { x: 'liked', y: 60 },
-    { x: 'unliked', y: 30 },
-  ];
-  const graphicColor = ['#ffafcc', '#83c5be', '#d00000'];
+  // const data = [
+  //   { x: 'favourite', y: 10 },
+  //   { x: 'liked', y: 60 },
+  //   { x: 'unliked', y: 30 },
+  // ];
+  // const graphicColor = ['#ffafcc', '#83c5be', '#d00000'];
 
   const [details, setDetails] = useState([]);
   const [, setCredits] = useState([]);
@@ -48,26 +56,16 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
   const [castClicked, setCastClicked] = useState(false);
   const [crewClicked, setCrewClicked] = useState(false);
 
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {
-  //     Alert.alert('Refreshed');
-  //   });
-  //   return unsubscribe;
-  // }, [navigation]);
-
   useEffect(() => {
     fetch(
       `https://api.themoviedb.org/3/movie/${route.params.id}?${apiKey}&language=en-US`,
     )
       .then((res) => res.json())
       .then((result) => {
-        setDetails(result);
+        setDetails(() => result);
       })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
-    return () => {
-      // console.log('unmount');
-    };
   }, [route.params.id]);
 
   useEffect(() => {
@@ -96,63 +94,57 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function isInList(list) {
+    return list.map((movie) => movie).find((el) => el.id === details.id);
+  }
+
   return (
     <View style={styles.container}>
       {isLoading ? (
         <ActivityIndicator color="#fec89a" />
       ) : (
-          <View>
-            <ImageBackground
-              style={styles.secondaryPicture}
-              source={{
-                uri: 'https://image.tmdb.org/t/p/w400/' + details.backdrop_path,
-              }}
-            />
-            <View style={styles.movieIntro}>
-              <View
-                style={{
-                  flex: 1,
-                }}
-              >
-                {favourites.includes(details) ? (
-                  <Ionicons
-                    name="md-heart-sharp"
-                    size={24}
-                    color="#ffafcc"
-                    style={styles.posterIcon}
-                  />
-                ) : (
-                    <></>
-                  )}
-                <View style={styles.titleAdd}>
-                  <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                    {' '}
-                    {details.title}{' '}
-                  </Text>
-                  <FlatList
-                    // horizontal={true}
-                    numColumns={3}
-                    data={details.genres}
-                    keyExtractor={({ id }) => id.toString()}
-                    renderItem={({ item }) => <Text>{item.name + ' '}</Text>}
-                  />
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate('AddToList', route.params);
-                    }}
-                  >
-                    <AntDesign name="pluscircleo" size={24} color="black" />
-                  </TouchableOpacity>
-                </View>
+        <View>
+          <ImageBackground
+            style={styles.secondaryPicture}
+            source={{
+              uri: 'https://image.tmdb.org/t/p/w400/' + details.backdrop_path,
+            }}
+          />
+          <View style={styles.movieIntro}>
+            <View>
+              <View style={styles.titleAdd}>
+                <Text
+                  style={{ fontSize: 20, fontWeight: 'bold', marginLeft: -5 }}
+                >
+                  {' '}
+                  {details.title}{' '}
+                </Text>
+                <FlatList
+                  style={{ marginTop: 5, marginBottom: 10 }}
+                  horizontal={true}
+                  // numColumns={3}
+                  data={details.genres}
+                  keyExtractor={({ id }) => id.toString()}
+                  renderItem={({ item }) => <Text>{item.name + '  '}</Text>}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('AddToList', route.params);
+                  }}
+                >
+                  <AntDesign name="pluscircleo" size={24} color="black" />
+                </TouchableOpacity>
               </View>
-              <VictoryPie
+            </View>
+            {/* <VictoryPie
                 data={data}
                 width={150}
                 height={150}
                 colorScale={graphicColor}
                 labelRadius={({ innerRadius }) => innerRadius + 25}
-              />
-            </View>
+              /> */}
+          </View>
+          <View>
             <Image
               style={styles.posters}
               source={{
@@ -160,72 +152,124 @@ const MovieDetails = ({ navigation, route, liked, disliked, favourites }) => {
               }}
               resizeMode="contain"
             />
-            <View>
-              <View style={styles.TabBarMainContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setDetailsClicked(true);
-                    setCastClicked(false);
-                    setCrewClicked(false);
-                  }}
-                  activeOpacity={0.4}
-                  style={styles.button}
-                >
-                  <Text style={styles.TextStyle}> DETAILS </Text>
-                </TouchableOpacity>
+            {isInList(favourites) !== undefined && (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('AddToList', route.params);
+                }}
+              >
+                <Ionicons
+                  name="md-heart-sharp"
+                  size={30}
+                  color="#ffafcc"
+                  style={styles.posterIcon}
+                />
+              </TouchableOpacity>
+            )}
+            {isInList(liked) !== undefined && (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('AddToList', route.params);
+                }}
+              >
+                <AntDesign
+                  name="like1"
+                  size={30}
+                  color="#83c5be"
+                  style={styles.posterIcon}
+                />
+              </TouchableOpacity>
+            )}
+            {isInList(disliked) !== undefined && (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('AddToList', route.params);
+                }}
+              >
+                <AntDesign
+                  name="dislike1"
+                  size={30}
+                  color="#d00000"
+                  style={styles.posterIcon}
+                />
+              </TouchableOpacity>
+            )}
 
-                <View style={{ height: 50, backgroundColor: '#fff', width: 2 }} />
-
-                <TouchableOpacity
-                  onPress={() => {
-                    setDetailsClicked(false);
-                    setCastClicked(true);
-                    setCrewClicked(false);
-                  }}
-                  activeOpacity={0.4}
-                  style={styles.button}
-                >
-                  <Text style={styles.TextStyle}> CAST </Text>
-                </TouchableOpacity>
-
-                <View style={{ height: 50, backgroundColor: '#fff', width: 2 }} />
-
-                <TouchableOpacity
-                  onPress={() => {
-                    setDetailsClicked(false);
-                    setCastClicked(false);
-                    setCrewClicked(true);
-                  }}
-                  activeOpacity={0.4}
-                  style={styles.button}
-                >
-                  <Text style={styles.TextStyle}> CREW </Text>
-                </TouchableOpacity>
-              </View>
-              <ScrollView>
-                {detailsClicked === true ? (
-                  <Details
-                    navigation={navigation}
-                    details={details}
-                    recommendations={recommendations}
-                  />
-                ) : (
-                    <></>
-                  )}
-                {castClicked === true ? (
-                  <Cast route={route} setLoading={setLoading} />
-                ) : (
-                    <></>
-                  )}
-                {crewClicked === true ? (
-                  <Crew route={route} setLoading={setLoading} />
-                ) : (
-                    <></>
-                  )}
-              </ScrollView>
-            </View>
+            {isInList(watchlist) !== undefined && (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('AddToList', route.params);
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="eye-plus-outline"
+                  size={30}
+                  color="#f6bd60"
+                  style={styles.posterIcon}
+                />
+              </TouchableOpacity>
+            )}
           </View>
-        )}
+          <View>
+            <View style={styles.TabBarMainContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  setDetailsClicked(true);
+                  setCastClicked(false);
+                  setCrewClicked(false);
+                }}
+                activeOpacity={0.4}
+                style={styles.button}
+              >
+                <Text style={styles.TextStyle}> DETAILS </Text>
+              </TouchableOpacity>
+
+              <View style={{ height: 50, backgroundColor: '#fff', width: 2 }} />
+
+              <TouchableOpacity
+                onPress={() => {
+                  setDetailsClicked(false);
+                  setCastClicked(true);
+                  setCrewClicked(false);
+                }}
+                activeOpacity={0.4}
+                style={styles.button}
+              >
+                <Text style={styles.TextStyle}> CAST </Text>
+              </TouchableOpacity>
+
+              <View style={{ height: 50, backgroundColor: '#fff', width: 2 }} />
+
+              <TouchableOpacity
+                onPress={() => {
+                  setDetailsClicked(false);
+                  setCastClicked(false);
+                  setCrewClicked(true);
+                }}
+                activeOpacity={0.4}
+                style={styles.button}
+              >
+                <Text style={styles.TextStyle}> CREW </Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView>
+              {detailsClicked === true && (
+                <Details
+                  navigation={navigation}
+                  details={details}
+                  recommendations={recommendations}
+                />
+              )}
+              {castClicked === true && (
+                <Cast route={route} setLoading={setLoading} />
+              )}
+              {crewClicked === true && (
+                <Crew route={route} setLoading={setLoading} />
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -234,26 +278,19 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     backgroundColor: '#ffffff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
     flex: 1,
   },
   movieIntro: {
-    flexDirection: 'row',
-    // justifyContent: 'space-evenly',
-    // alignItems: 'center',
     backgroundColor: '#d8e2dc',
-    maxHeight: 105,
-    // zIndex: 1,
+    height: 105,
   },
   posters: {
     width: 70,
     height: 100,
-    top: 180,
+    top: -135,
     left: 15,
     position: 'absolute',
     borderWidth: 0.5,
-    // borderRadius: 8,
     borderColor: 'white',
   },
   secondaryPicture: {
@@ -262,17 +299,19 @@ const styles = StyleSheet.create({
   },
   posterIcon: {
     position: 'absolute',
-    top: 5,
-    left: 60,
+    top: -147,
+    left: 65,
     right: 0,
     bottom: 0,
   },
   titleAdd: {
     position: 'absolute',
     flexDirection: 'column',
-    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
     top: 5,
-    left: 100,
+    left: 120,
+    flex: 1,
   },
   TabBarMainContainer: {
     justifyContent: 'space-around',

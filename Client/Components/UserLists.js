@@ -11,31 +11,34 @@ import {
 const UserLists = ({ navigation, title, userlist }) => {
   return (
     <View>
-      <Text>{title}</Text>
-      <FlatList
-        horizontal={true}
-        data={userlist}
-        keyExtractor={({ id }, index) => id.toString()}
-        renderItem={({ item }) => (
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('MovieDetails', item);
-              }}
-            >
-              <View style={styles.posterBox}>
-                <Image
-                  style={styles.posters}
-                  resizeMode="contain"
-                  source={{
-                    uri: 'https://image.tmdb.org/t/p/w400/' + item.poster_path,
-                  }}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+      <Text style={styles.title}>{title}</Text>
+      <View>
+        <FlatList
+          horizontal={true}
+          data={userlist}
+          keyExtractor={({ id }, index) => id.toString()}
+          renderItem={({ item }) => (
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('MovieDetails', item);
+                }}
+              >
+                <View style={styles.posterBox}>
+                  <Image
+                    style={styles.posters}
+                    resizeMode="contain"
+                    source={{
+                      uri:
+                        'https://image.tmdb.org/t/p/w400/' + item.poster_path,
+                    }}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 };
@@ -52,6 +55,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10,
     elevation: 3,
+  },
+  title: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#6d6875',
   },
 });
 

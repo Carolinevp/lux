@@ -14,7 +14,7 @@ const user = new Schema({
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD6HFhpwNrwiye9Qp_o5StOPngPZTTq-If5Fksap0fCCYUE5kusg',
   },
   last_seen: [Number],
-  want_to_see: [Number],
+  watchlist: [Number],
   liked: [Number],
   disliked: [Number],
   favourites: [Number],

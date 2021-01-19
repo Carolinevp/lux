@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -15,16 +15,6 @@ const Search = ({ navigation }) => {
   const [search, setSearch] = useState();
   const [results, setResults] = useState([]);
   const [isLoading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   fetch(
-  //     `https://api.themoviedb.org/3/search/movie?${apiKey}&language=en-US&${search}&page=1&include_adult=false`,
-  //   )
-  //     .then((res) => res.json())
-  //     .then((result) => setResults(result.results))
-  //     .catch((error) => console.error(error))
-  //     .finally(() => setLoading(false));
-  // }, [search]);
 
   const fetchMovies = (text) => {
     fetch(
@@ -46,14 +36,6 @@ const Search = ({ navigation }) => {
     setSearch(search1);
   };
 
-  // console.log(results);
-  // if (results && results.length > 0) {
-  //   const filterData = results.filter(
-  //     (result) => result.poster_path !== null && result.media_type !== 'person',
-  //   );
-  //   return filterData;
-  // }
-
   return (
     <View style={styles.container}>
       <SearchBar
@@ -70,7 +52,10 @@ const Search = ({ navigation }) => {
       />
       <View style={styles.movies}>
         {isLoading ? (
-          <ActivityIndicator color="#fec89a" />
+          <View>
+            <Text>No Results found</Text>
+            <ActivityIndicator color="#fec89a" />
+          </View>
         ) : (
             <FlatList
               numColumns={3}

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,6 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-// import { MovieContext } from '../MovieContext';
 
 const MovieCarousel = ({ navigation, title, list }) => {
   // const [value, setValue] = useState();
@@ -27,7 +26,6 @@ const MovieCarousel = ({ navigation, title, list }) => {
             <View style={styles.posterBox}>
               <TouchableOpacity
                 onPress={() => {
-                  // refresh();
                   navigation.navigate('MovieDetails', item);
                 }}
               >

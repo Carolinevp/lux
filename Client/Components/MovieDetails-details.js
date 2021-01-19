@@ -19,53 +19,51 @@ function timeConvert(num) {
 const Details = ({ navigation, details, recommendations }) => {
   return (
     <View style={styles.details}>
-      {details.tagline ? (
+      {details && details.tagline ? (
         <View style={styles.subCat}>
           <Text style={{ fontStyle: 'italic' }}>{details.tagline}</Text>
         </View>
       ) : (
-          <></>
-        )}
+        <></>
+      )}
       <View style={styles.subCat}>
         <Text style={styles.titleCat}>Year:</Text>
-        <Text>{moment(details.release_date).format('YYYY')}</Text>
+        <Text>{moment(details && details.release_date).format('YYYY')}</Text>
       </View>
       <View style={styles.subCat}>
         <Text style={styles.titleCat}>Runtime:</Text>
-        <Text>{timeConvert(details.runtime)}</Text>
+        <Text>{timeConvert(details && details.runtime)}</Text>
       </View>
       <View style={styles.subCat}>
         <Text style={styles.titleCat}>Synopsis:</Text>
-        <ViewMoreText numberOfLines={2} style={{ width: 300 }}>
-          <Text>{details.overview}</Text>
+        <ViewMoreText numberOfLines={2} style={{ width: '100%' }}>
+          <Text>{details && details.overview}</Text>
         </ViewMoreText>
       </View>
       <View style={styles.subCat}>
         <Text style={styles.titleCat}>Genre:</Text>
         <FlatList
           horizontal={true}
-          data={details.genres}
+          data={details && details.genres}
           keyExtractor={({ id }) => id.toString()}
-          renderItem={({ item }) => <Text>{item.name + ' '}</Text>}
+          renderItem={({ item }) => <Text>{item && item.name + '  '}</Text>}
         />
       </View>
-      {/* {details.production_countries.length > 0 ? (
+      <View style={styles.subCat}>
+        <Text style={styles.titleCat}>Language:</Text>
+        <Text>{details && details.original_language}</Text>
+      </View>
+      {details.production_countries && details.production_countries.length > 0 && (
         <View style={styles.subCat}>
           <Text style={styles.titleCat}>Countries:</Text>
           <FlatList
             horizontal={true}
             data={details.production_countries}
             keyExtractor={(item) => item.name}
-            renderItem={({ item }) => <Text>{item.name + ' '}</Text>}
+            renderItem={({ item }) => <Text>{item.name + '  '}</Text>}
           />
         </View>
-      ) : (
-          <></>
-        )} */}
-      <View style={styles.subCat}>
-        <Text style={styles.titleCat}>Language:</Text>
-        <Text>{details.original_language}</Text>
-      </View>
+      )}
 
       <MovieCarousel
         navigation={navigation}

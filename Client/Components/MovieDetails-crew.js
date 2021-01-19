@@ -46,7 +46,7 @@ const Crew = ({ route, setLoading }) => {
             //   navigation.navigate('MovieDetails', item);
             // }}
             >
-              {item.profile_path ? (
+              {item && item.profile_path ? (
                 <Image
                   style={styles.castPicture}
                   source={{
@@ -62,8 +62,8 @@ const Crew = ({ route, setLoading }) => {
                   </View>
                 )}
             </TouchableOpacity>
-            <Text style={{ fontSize: 14 }}> {item.name}</Text>
-            <Text style={{ fontSize: 10 }}>{item.job}</Text>
+            <Text style={{ fontSize: 14 }}> {item && item.name}</Text>
+            <Text style={{ fontSize: 10 }}>{item && item.job}</Text>
           </View>
         )}
       />

@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, ActivityIndicator } from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  ActivityIndicator,
+  Text,
+  RefreshControl,
+} from 'react-native';
 import UserChart from '../Components/UserChart';
 import UserLists from '../Components/UserLists';
 import UserProfileInfo from '../Components/UserProfileInfo';
-// import { UserContext } from '../UserContext';
 import apiKey from '../assets/apikey';
-// import { getListByUser } from '../Services/ApiService';
 import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs([
@@ -25,8 +31,142 @@ const UserProfile = ({
   setFavourites,
   setLastSeen,
 }) => {
-  // const { user } = useContext(UserContext);
   const [isLoading, setLoading] = useState(true);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/favourites')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setFavourites(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => setLoading(false));
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/last_seen')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setLastSeen(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => setLoading(false));
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/favourites')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setFavourites(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => setLoading(false));
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/liked')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setLiked(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => setLoading(false));
+
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/disliked')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setDisliked(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => setLoading(false));
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/watchlist')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        const myPromises = res.map((item) =>
+          fetch(
+            `https://api.themoviedb.org/3/movie/${item}?${apiKey}&language=en-US`,
+          ).then((res1) => {
+            return res1.json();
+          }),
+        );
+        Promise.all(myPromises).then((results) => {
+          setWatchlist(() => results);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => setLoading(false));
+    wait(1000).then(() => setRefreshing(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/liked')
@@ -49,7 +189,7 @@ const UserProfile = ({
         console.log(err);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [setLiked]);
 
   useEffect(() => {
     fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/disliked')
@@ -72,8 +212,7 @@ const UserProfile = ({
         console.log(err);
       })
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setDisliked]);
 
   useEffect(() => {
     fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/favourites')
@@ -96,11 +235,10 @@ const UserProfile = ({
         console.log(err);
       })
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setFavourites]);
 
   useEffect(() => {
-    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/want_to_see')
+    fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/watchlist')
       .then((res) => {
         return res.json();
       })
@@ -120,8 +258,7 @@ const UserProfile = ({
         console.log(err);
       })
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setWatchlist]);
 
   useEffect(() => {
     fetch('http://192.168.1.12:3001/lists/5ff9c7cfdf2f636e9546fe1c/last_seen')
@@ -144,89 +281,72 @@ const UserProfile = ({
         console.log(err);
       })
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setLastSeen]);
 
   return (
     <View style={styles.container}>
-      <UserProfileInfo />
-      {/* <FlatList
-        data={user}
-        keyExtractor={({ id }, index) => id.toString()}
-        renderItem={({ item }) => <Text>{item.name}</Text>}
-      /> */}
-      <UserChart />
+      <UserProfileInfo
+        liked={liked}
+        disliked={disliked}
+        favourites={favourites}
+      />
+      <UserChart
+        liked={liked}
+        disliked={disliked}
+        favourites={favourites}
+        lastSeen={lastSeen}
+      />
       {isLoading ? (
         <ActivityIndicator color="#fec89a" />
       ) : (
-          <ScrollView horizontal={true} style={styles.listBox}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <ScrollView style={styles.listBox}>
             <View>
-              {lastSeen.length > 0 ? (
-                <>
+              <Text style={styles.info}> My Lists: </Text>
+              <View style={{ marginBottom: 10 }}>
+                {watchlist.length > 0 && (
                   <UserLists
                     navigation={navigation}
-                    title="Last seen"
-                    userlist={lastSeen}
-                  />
-                </>
-              ) : (
-                  <></>
-                )}
-            </View>
-            <View>
-              {watchlist.length > 0 ? (
-                <>
-                  <UserLists
-                    navigation={navigation}
-                    title="Want to watch"
+                    title="WATCHLIST"
                     userlist={watchlist}
                   />
-                </>
-              ) : (
-                  <></>
                 )}
-            </View>
-            <View>
-              {liked.length > 0 ? (
-                <>
+              </View>
+              <View style={{ marginBottom: 10 }}>
+                {liked.length > 0 && (
                   <UserLists
                     navigation={navigation}
-                    title="Liked"
+                    title="LIKED"
                     userlist={liked}
                   />
-                </>
-              ) : (
-                  <></>
                 )}
-            </View>
-            <View>
-              {disliked.length > 0 ? (
-                <>
+              </View>
+              <View style={{ marginBottom: 10 }}>
+                {disliked.length > 0 && (
                   <UserLists
                     navigation={navigation}
-                    title="Disliked"
+                    title="DISLIKED"
                     userlist={disliked}
                   />
-                </>
-              ) : (
-                  <></>
                 )}
-            </View>
-            <View>
-              {favourites.length > 0 ? (
-                <>
+              </View>
+              <View style={{ marginBottom: 10 }}>
+                {favourites.length > 0 && (
                   <UserLists
                     navigation={navigation}
-                    title="Favourites"
+                    title="FAVOURITES"
                     userlist={favourites}
                   />
-                </>
-              ) : (
-                  <></>
                 )}
+              </View>
             </View>
           </ScrollView>
-        )}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -235,12 +355,16 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     backgroundColor: '#ffffff',
-    alignItems: 'center',
-    justifyContent: 'center',
     flex: 1,
   },
   listBox: {
     marginLeft: 20,
+  },
+  info: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    marginBottom: 20,
+    textDecorationLine: 'underline',
   },
 });
 

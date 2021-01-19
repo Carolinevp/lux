@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useContext } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,27 +7,15 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  Button,
 } from 'react-native';
-import { UserContext } from '../UserContext';
+// import { UserContext } from '../UserContext';
 
-export default function Login({
-  navigation,
-  readStorage,
-  saveStorage,
-  removeStorage,
-}) {
-  const { user } = useContext(UserContext);
-
-  useEffect(() => {
-    readStorage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+export default function Login({ navigation }) {
+  // const { user } = useContext(UserContext);
 
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={require('../assets/logo2.png')} />
-      {/* <Text>{user}</Text> */}
 
       <StatusBar style="auto" />
       <View style={styles.inputView}>
@@ -35,7 +23,6 @@ export default function Login({
           style={styles.TextInput}
           placeholder="Email"
           placeholderTextColor="#003f5c"
-        // onChangeText={(Email) => setEmail(Email)}
         />
       </View>
 
@@ -45,7 +32,6 @@ export default function Login({
           placeholder="Password"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
-        // onChangeText={(Password) => setPassword(Password)}
         />
       </View>
 
@@ -53,18 +39,11 @@ export default function Login({
         <Text style={styles.forgot_button}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      {/* <Button onPress={saveStorage()} title="save data" />
-      <Button onPress={() => readStorage()} title="show data" />
-      <Button onPress={() => removeStorage()} title="delete data" /> */}
-
       <TouchableOpacity
         style={styles.loginBtn}
         onPress={() => {
-          saveStorage();
-          readStorage(user);
           navigation.navigate('AllTabs', {
             screen: 'UserProfile',
-            // params: { email: email },
           });
         }}
       >
