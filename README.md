@@ -15,7 +15,7 @@ lux was created using the Movie-DB api.
 
 ## Screenshots
 
-![app overview](./ReadMeImg/AppOverview.png)
+![app overview](./ReadMeImg/appOverview.png)
 
 
 
