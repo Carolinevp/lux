@@ -1,6 +1,6 @@
 # lux
 
-![lux](./img/Screenshot 2021-02-12 at 16.08.08.png)
+![lux](./ReadMeImg/logo2.png)
 
 
 
@@ -15,7 +15,7 @@ lux was created using the Movie-DB api.
 
 ## Screenshots
 
-![app overview](./img/Screenshot 2021-02-12 at 16.14.50.png)
+![app overview](./ReadMeImg/AppOverview.png)
 
 
 
@@ -44,7 +44,7 @@ Go to the `/Back-End` and run:
 
 #### FrontEnd
 
-Go to the `/Client`and run `npm i`.
+Go to the `/Client` and run `npm i`.
 
 ### Start the App
 
