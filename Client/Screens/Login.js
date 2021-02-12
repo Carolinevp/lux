@@ -8,11 +8,8 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-// import { UserContext } from '../UserContext';
 
 export default function Login({ navigation }) {
-  // const { user } = useContext(UserContext);
-
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={require('../assets/logo2.png')} />

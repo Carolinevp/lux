@@ -2,7 +2,9 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { VictoryPie } from 'victory-native';
 import Svg, { Circle } from 'react-native-svg';
+
 import UserLists from './UserLists';
+import { graphicColor } from '../assets/chartInfo';
 
 const UserChart = ({ liked, disliked, favourites, navigation, lastSeen }) => {
   function genreCount(category) {
@@ -47,44 +49,6 @@ const UserChart = ({ liked, disliked, favourites, navigation, lastSeen }) => {
   ];
 
   const data2 = data.filter((cat) => cat.y > 1).sort((a, b) => b.y - a.y);
-
-  // const defaultGraphicData = [
-  //   { x: 'comedy', y: 100 },
-  //   { x: 'drama', y: 0 },
-  //   { x: 'thriller', y: 0 },
-  //   { x: 'action', y: 0 },
-  //   { x: 'documentary', y: 0 },
-  // ];
-
-  const graphicColor = [
-    '#fec5bb',
-    '#fcd5ce',
-    '#fae1dd',
-    '#f8edeb',
-    '#e8e8e4',
-    '#DBE7E4',
-    '#ece4db',
-    '#ffe5d9',
-    '#ffd7ba',
-    '#fec89a',
-    '#e2e2df',
-    '#d2d2cf',
-    '#e2cfc4',
-    '#f7d9c4',
-    '#faedcb',
-    '#c9e4de',
-    '#c6def1',
-    '#dbcdf0',
-    '#f2c6de',
-    '#f9c6c9',
-  ];
-
-  // const [graphicData, setGraphicData] = useState(defaultGraphicData);
-
-  // useEffect(() => {
-  //   setGraphicData(data2);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   return (
     <View style={styles.userInfo}>

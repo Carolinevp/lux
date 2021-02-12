@@ -35,7 +35,7 @@ const MovieDetails = ({
   favourites,
   watchlist,
 }) => {
-  //? To add when multiple number of user for stats
+  //TODO when multiple number of user for stats
   // const data = [
   //   { x: 'favourite', y: favourites.length },
   //   { x: 'liked', y: liked.length },
@@ -136,6 +136,7 @@ const MovieDetails = ({
                 </TouchableOpacity>
               </View>
             </View>
+            {/* //TODO when multiple number of user for stats */}
             {/* <VictoryPie
                 data={data}
                 width={150}

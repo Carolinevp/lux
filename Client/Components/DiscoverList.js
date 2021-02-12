@@ -1,10 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Image, Text } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 
 const DiscoverList = ({ movie }) => {
   return (
     <View>
-      <Text style={styles.title}></Text>
       <Image
         style={styles.posters}
         source={{
@@ -22,14 +21,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginRight: 10,
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
-    // elevation: 1,
   },
   title: {
     fontSize: 20,

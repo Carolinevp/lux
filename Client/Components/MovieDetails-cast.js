@@ -34,18 +34,12 @@ const Cast = ({ route, setLoading }) => {
   return (
     <View style={styles.mainBox}>
       <FlatList
-        // horizontal={true}
         numColumns={3}
-        // columnWrapperStyle
         data={credits.cast}
         keyExtractor={({ id }) => id.toString()}
         renderItem={({ item }) => (
           <View style={styles.box}>
-            <TouchableOpacity
-            // onPress={() => {
-            //   navigation.navigate('MovieDetails', item);
-            // }}
-            >
+            <TouchableOpacity>
               {item && item.profile_path ? (
                 <Image
                   style={styles.castPicture}

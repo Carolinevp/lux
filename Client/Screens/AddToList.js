@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Alert } from 'react-native';
-// import { MaterialIcons } from '@expo/vector-icons';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,10 +14,6 @@ const AddToList = ({
 }) => {
   return (
     <View style={styles.container}>
-      {/* <Text style={{ fontSize: 30, fontWeight: 'bold' }}>
-        {' '}
-        {route.params.title}{' '}
-      </Text> */}
       <View style={styles.posterBox}>
         <Image
           style={styles.posters}

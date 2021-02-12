@@ -9,11 +9,6 @@ import {
 } from 'react-native';
 
 const MovieCarousel = ({ navigation, title, list }) => {
-  // const [value, setValue] = useState();
-
-  // const refresh = () => {
-  //   setValue({});
-  // };
   return (
     <View style={styles.movieLists}>
       <Text style={styles.title}>{title}</Text>
@@ -65,7 +60,6 @@ const styles = StyleSheet.create({
   movieLists: {
     flexDirection: 'column',
     marginTop: 20,
-    // marginLeft: 5,
   },
 });
 

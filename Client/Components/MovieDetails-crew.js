@@ -34,17 +34,12 @@ const Crew = ({ route, setLoading }) => {
   return (
     <View style={styles.mainBox}>
       <FlatList
-        // horizontal={true}
         numColumns={3}
-        // columnWrapperStyle
         data={credits.crew}
         keyExtractor={({ id }) => id.toString()}
         renderItem={({ item }) => (
           <View style={styles.box}>
             <TouchableOpacity
-            // onPress={() => {
-            //   navigation.navigate('MovieDetails', item);
-            // }}
             >
               {item && item.profile_path ? (
                 <Image

@@ -89,8 +89,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 30,
     backgroundColor: '#ffffff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
     flex: 1,
   },
   movies: {
@@ -99,21 +97,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   posters: {
-    // flex: 1,
     width: 110,
     height: 160,
     marginTop: 25,
     marginHorizontal: 10,
-    // marginLeft: 10,
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
-    // elevation: 1,
   },
 });
 

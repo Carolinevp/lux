@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
@@ -27,7 +26,7 @@ const BottomTabBar = ({ navigation }) => {
         <Text style={styles.TextStyle}> Profile </Text>
       </TouchableOpacity>
 
-      <View style={{ height: 50, backgroundColor: '#fff', width: 2 }} />
+      <View style={styles.separators} />
 
       <TouchableOpacity
         onPress={navigateToDiscover}
@@ -42,7 +41,7 @@ const BottomTabBar = ({ navigation }) => {
         <Text style={styles.TextStyle}> Discover </Text>
       </TouchableOpacity>
 
-      <View style={{ height: 50, backgroundColor: '#fff', width: 2 }} />
+      <View style={styles.separators} />
 
       <TouchableOpacity
         onPress={navigateToSearch}
@@ -71,11 +70,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexGrow: 1,
   },
-
   TextStyle: {
     color: 'black',
     textAlign: 'center',
     fontSize: 10,
+  },
+  separators: {
+    height: 50,
+    backgroundColor: '#fff',
+    width: 2,
   },
 });
 

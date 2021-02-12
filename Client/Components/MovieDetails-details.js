@@ -77,8 +77,6 @@ const Details = ({ navigation, details, recommendations }) => {
 const styles = StyleSheet.create({
   movieIntro: {
     flexDirection: 'row',
-    // justifyContent: 'space-evenly',
-    // alignItems: 'center',
     backgroundColor: '#d8e2dc',
     maxHeight: 115,
   },
