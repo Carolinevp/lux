@@ -9,8 +9,6 @@ lux is a mobile application that allows users to search and store movies. Each m
 Users are able to make lists of movies based on their opinion about the movie (liked, disliked, favourite), or they can add it to their watchlist to come back to it later.
 They can find inspiration in the discover section.
 
-lux was created using the Movie-DB api.
-
 
 
 ## Screenshots
@@ -71,4 +69,19 @@ From the root folder of the project change into `/Client` and `npm start`
 ### API
 
 - [Movie DB](https://www.themoviedb.org/documentation/api)
+
+## Observations
+
+##### Room for improvements
+
+- Write tests
+- Better state management
+- Create more presentational components to clean the screen components
+
+##### Next orders
+
+- Implement authentification
+- Add connecting to friends feature
+- Deploy lux to the play store
+- Make it friends with iOS
 
